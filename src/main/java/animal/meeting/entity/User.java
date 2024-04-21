@@ -1,6 +1,7 @@
 package animal.meeting.entity;
 
 import animal.meeting.BaseTimeEntity;
+import animal.meeting.entity.type.AninmalType;
 import animal.meeting.entity.type.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,9 +32,9 @@ public class User extends BaseTimeEntity {
 	private Gender gender;
 
 	@Column(name = "first_choice_animal_type")
-	private String firstChoiceAnimalType;
+	private AninmalType firstChoiceAnimalType;
 
 	@Column(name = "second_choice_animal_type")
-	private String secondChoiceAnimalType;
+	private AninmalType secondChoiceAnimalType;
 
 }
