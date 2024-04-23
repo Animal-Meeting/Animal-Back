@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum GroupType {
+public enum MeetingGroupType {
 
 	ONE_ON_ONE("1대1 미팅"),
 	TWO_ON_TWO("2대2 미팅"),
