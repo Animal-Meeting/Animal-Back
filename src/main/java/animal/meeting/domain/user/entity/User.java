@@ -1,8 +1,8 @@
-package animal.meeting.entity;
+package animal.meeting.domain.user.entity;
 
 import animal.meeting.BaseTimeEntity;
-import animal.meeting.entity.type.AninmalType;
-import animal.meeting.entity.type.Gender;
+import animal.meeting.domain.user.entity.type.AninmalType;
+import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,10 +30,12 @@ public class User extends BaseTimeEntity {
 	@Column(columnDefinition = "enum('MALE', 'FEMALE')" , nullable = false)
 	private Gender gender;
 
-	@Column(name = "first_choice_animal_type")
+	@Enumerated(EnumType.STRING)
 	private AninmalType firstChoiceAnimalType;
 
-	@Column(name = "second_choice_animal_type")
+	@Enumerated(EnumType.STRING)
 	private AninmalType secondChoiceAnimalType;
 
+	@Enumerated(EnumType.STRING)
+	private AninmalType selfAnimalType;
 }

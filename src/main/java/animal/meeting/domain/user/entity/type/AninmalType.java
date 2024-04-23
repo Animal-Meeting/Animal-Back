@@ -1,4 +1,4 @@
-package animal.meeting.entity.type;
+package animal.meeting.domain.user.entity.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AninmalType {
 
+	NONE("상관없음"),
 	DOG("강아지"),
 	CAT("고양이"),
 	RABBIT("토끼"),
