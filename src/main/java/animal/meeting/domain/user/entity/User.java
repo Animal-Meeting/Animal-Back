@@ -27,7 +27,7 @@ public class User extends BaseTimeEntity {
 	private String phoneNumber;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "enum('MALE', 'FEMALE')" , nullable = false)
+	@Column(columnDefinition = "enum('MALE', 'FEMALE')", nullable = false)
 	private Gender gender;
 
 	@Enumerated(EnumType.STRING)

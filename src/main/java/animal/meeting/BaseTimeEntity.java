@@ -18,12 +18,10 @@ public abstract class BaseTimeEntity {
 
 	//생성일자는 수정하면 안되니까 update = false
 	@CreatedDate
-	@Column(updatable=false)
+	@Column(updatable = false)
 	private LocalDateTime createAt;
 
 	// 조회한 Entity 값을 변경할 때 시간이 자동 저장
 	@LastModifiedDate
-	@Column(updatable=true)
 	private LocalDateTime updatedAt;
-
 }
