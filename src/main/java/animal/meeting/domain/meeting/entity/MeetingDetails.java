@@ -2,19 +2,19 @@ package animal.meeting.domain.meeting.entity;
 
 import org.hibernate.annotations.Comment;
 
-import animal.meeting.BaseTimeEntity;
+import animal.meeting.domain.BaseAuditEntity;
+import animal.meeting.domain.BaseTimeEntity;
 import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @MappedSuperclass
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public abstract class MeetingDetails extends BaseTimeEntity {
+public abstract class MeetingDetails extends BaseAuditEntity {
 
 	@Comment("매칭 상태")
 	@Enumerated(EnumType.STRING)

@@ -1,6 +1,7 @@
 package animal.meeting.domain.user.entity;
 
-import animal.meeting.BaseTimeEntity;
+import animal.meeting.domain.BaseAuditEntity;
+import animal.meeting.domain.BaseTimeEntity;
 import animal.meeting.domain.user.entity.type.AninmalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
@@ -14,7 +15,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class User extends BaseTimeEntity {
+public class User extends BaseAuditEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
