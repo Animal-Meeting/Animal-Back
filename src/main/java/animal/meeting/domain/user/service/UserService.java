@@ -16,17 +16,16 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public void registerUser(UserRegisterRequest request) {
-		User user =
-			userRepository
-				.findByPhoneNumber(request.phoneNumber())
-				.orElse(null);
+		userRepository.findByPhoneNumber(request.phoneNumber())
+			.ifPresentOrElse(
+				user -> updateUser(user, request),
+				() -> createUser(request)
+			);
+	}
 
-		if (user == null) {
-			User newUser = User.create(request);
-			userRepository.save(newUser);
-		} else {
-			updateUser(user, request);
-		}
+	private void createUser(UserRegisterRequest request) {
+		User newUser = User.create(request);
+		userRepository.save(newUser);
 	}
 
 	private void updateUser(User user, UserRegisterRequest request) {
