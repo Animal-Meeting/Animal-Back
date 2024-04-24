@@ -12,7 +12,7 @@ import lombok.Builder;
 public record UserRegisterRequest(
 
 	@NotBlank(message = "이름은 비워둘 수 없습니다.")
-	@Size(max = 50, message = "이름은 30자 이하로 작성해 주세요.")
+	@Size(max = 30, message = "이름은 30자 이하로 작성해 주세요.")
 	String name,
 	@NotBlank(message = "전화번호는 비워둘 수 없습니다.")
 	@Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호를 정확히 입력해 주세요.")
