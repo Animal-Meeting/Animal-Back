@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AninmalType {
+public enum AnimalType {
 
 	NONE("상관없음"),
 	DOG("강아지"),
