@@ -12,7 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ThreeOnThreeMeeting extends MeetingDetails{
+public class ThreeOnThreeMeeting extends MeetingDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
