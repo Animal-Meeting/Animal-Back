@@ -35,6 +35,6 @@ public class MatchingResult extends BaseTimeEntity {
 	private MeetingGroupType meetingType;
 
 	@Comment("오픈 카카오톡 링크")
-	@Column(columnDefinition = "varchar(50)", unique = true)
+	@Column(columnDefinition = "varchar(80)", unique = true)
 	private String kakaoLink;
 }
