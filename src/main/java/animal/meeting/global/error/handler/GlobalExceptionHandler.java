@@ -4,8 +4,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -115,6 +117,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		log.error("NoResourceFoundException : {}", ex.getMessage(), ex);
 		final ErrorCode errorCode = CommonErrorCode.NOT_FOUND_REQUEST_RESOURCE;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+	}
+
+	/**
+	 * @RequestParam의 값이 없을 때
+	 */
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(
+		MissingServletRequestParameterException ex,
+		HttpHeaders headers,
+		HttpStatusCode status,
+		WebRequest request) {
+
+		log.error("MissingServletRequestParameterException : {}", ex.getMessage(), ex);
+
+		final ErrorCode errorCode = CommonErrorCode.REQUESTED_PARAM_NOT_VALIDATE;
 		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
 		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
 		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
