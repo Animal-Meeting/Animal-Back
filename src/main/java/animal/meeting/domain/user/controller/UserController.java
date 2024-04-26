@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import animal.meeting.domain.user.dto.request.LoginRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
+import animal.meeting.domain.user.dto.response.LoginResponse;
 import animal.meeting.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +22,10 @@ public class UserController {
 	@PostMapping("/register")
 	public void registerMeeting(@Valid @RequestBody UserRegisterRequest request) {
 		userService.registerUser(request);
+	}
+
+	@PostMapping("/login")
+	public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+		return userService.login(request);
 	}
 }
