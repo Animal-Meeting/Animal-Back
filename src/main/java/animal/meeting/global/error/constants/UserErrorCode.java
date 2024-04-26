@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public enum UserErrorCode implements ErrorCode {
 
 	INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"),
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 회원입니다."),
 	;
 	private final HttpStatus httpStatus;
 	private final String message;
