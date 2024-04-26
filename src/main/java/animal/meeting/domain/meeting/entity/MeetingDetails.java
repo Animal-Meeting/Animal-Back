@@ -3,7 +3,6 @@ package animal.meeting.domain.meeting.entity;
 import org.hibernate.annotations.Comment;
 
 import animal.meeting.domain.BaseAuditEntity;
-import animal.meeting.domain.BaseTimeEntity;
 import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
@@ -19,10 +18,10 @@ public abstract class MeetingDetails extends BaseAuditEntity {
 	@Comment("매칭 상태")
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private MeetingStatus status;
+	protected MeetingStatus status;
 
 	@Comment("그룹 성별")
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Gender gender;
+	protected Gender gender;
 }
