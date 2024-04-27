@@ -68,7 +68,7 @@ public class UserService {
 
 	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 		validateUserCountAndGroupType(requests, groupType);
-		validateNameAndPhoneNumber(requests);
+		validatePhoneNumber(requests);
 	}
 
 	private void validateUserCountAndGroupType(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
@@ -80,18 +80,14 @@ public class UserService {
 		}
 	}
 
-	private void validateNameAndPhoneNumber(List<UserRegisterRequest> requests) {
-		Set<String> userNames = new HashSet<>();
+	private void validatePhoneNumber(List<UserRegisterRequest> requests) {
 		Set<String> phoneNumbers = new HashSet<>();
 
 		for (UserRegisterRequest request : requests) {
-			String userName = request.name();
 			String phoneNumber = request.phoneNumber();
 
 			if (!phoneNumbers.add(phoneNumber)) {
 				throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
-			} else if (!userNames.add(userName) && !phoneNumbers.add(phoneNumber)) {
-				throw new CustomException(ErrorCode.DUPLICATED_NAME_AND_PHONE_NUMBER);
 			}
 		}
 	}
