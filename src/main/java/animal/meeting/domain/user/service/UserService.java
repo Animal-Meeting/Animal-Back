@@ -1,6 +1,8 @@
 package animal.meeting.domain.user.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class UserService {
 
 	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 
-		validateUserCountAndGroupType(requests, groupType);
+		validateRegistration(requests, groupType);
 		List<User> userList = processRegistraion(requests);
 		meetingService.joinMeeting(userList, groupType);
 	}
@@ -65,12 +67,33 @@ public class UserService {
 		return LoginResponse.of(user);
 	}
 
+	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
+		validateUserCountAndGroupType(requests, groupType);
+		validateNameAndPhoneNumber(requests);
+	}
+
 	private void validateUserCountAndGroupType(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 		int expectedUserCount = groupType.getUserCount();
 		int intputUserCount = requests.size();
 
 		if (expectedUserCount != intputUserCount) {
 			throw new CustomException(MeetingErrorCode.INVALID_MEETING_PARAMETERS);
+		}
+	}
+
+	private void validateNameAndPhoneNumber(List<UserRegisterRequest> requests) {
+		Set<String> userNames = new HashSet<>();
+		Set<String> phoneNumbers = new HashSet<>();
+
+		for (UserRegisterRequest request : requests) {
+			String userName = request.name();
+			String phoneNumber = request.phoneNumber();
+
+			if (!phoneNumbers.add(phoneNumber)) {
+				throw new CustomException(UserErrorCode.DUPLICATED_PHONE_NUMBER);
+			} else if (!userNames.add(userName) && !phoneNumbers.add(phoneNumber)) {
+				throw new CustomException(UserErrorCode.DUPLICATED_NAME_AND_PHONE_NUMBER);
+			}
 		}
 	}
 }

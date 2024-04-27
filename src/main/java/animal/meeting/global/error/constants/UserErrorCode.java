@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
 
-	INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"),
+	DUPLICATED_NAME_AND_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "이름과 전화번호가 중복입니다."),
+	DUPLICATED_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "중복된 전화번호가 존재합니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 회원입니다."),
 	;
 	private final HttpStatus httpStatus;
