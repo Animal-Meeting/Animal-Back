@@ -22,8 +22,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import animal.meeting.global.error.CustomException;
-import animal.meeting.global.error.ErrorCode;
-import animal.meeting.global.error.constants.CommonErrorCode;
+import animal.meeting.global.error.ErrorCodeStatus;
+import animal.meeting.global.error.constants.ErrorCode;
 import animal.meeting.global.response.ErrorResponse;
 import animal.meeting.global.response.GlobalResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -56,10 +56,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		WebRequest request) {
 
 		log.error("HttpMessageNotReadableException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = CommonErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/**
@@ -91,10 +91,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		WebRequest request) {
 
 		log.error("HttpRequestMethodNotSupportedException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = CommonErrorCode.METHOD_NOT_ALLOWED;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.METHOD_NOT_ALLOWED;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/**
@@ -108,10 +108,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		WebRequest request) {
 
 		log.error("NoHandlerFoundException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = CommonErrorCode.NOT_FOUND_REQUEST_ADDRESS;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.NOT_FOUND_REQUEST_ADDRESS;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/**
@@ -125,10 +125,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		WebRequest request) {
 
 		log.error("NoResourceFoundException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = CommonErrorCode.NOT_FOUND_REQUEST_RESOURCE;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.NOT_FOUND_REQUEST_RESOURCE;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/**
@@ -143,10 +143,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		log.error("MissingServletRequestParameterException : {}", ex.getMessage(), ex);
 
-		final ErrorCode errorCode = CommonErrorCode.REQUESTED_PARAM_NOT_VALIDATE;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.REQUESTED_PARAM_NOT_VALIDATE;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/**
@@ -162,10 +162,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		log.error("HandlerMethodValidationException : {}", ex.getMessage(), ex);
 
-		final ErrorCode errorCode = CommonErrorCode.REQUESTED_VALUE_NOT_VALIDATE;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.REQUESTED_VALUE_NOT_VALIDATE;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/** enum type 일치하지 않아 binding 못할 경우 발생 주로 @RequestParam enum으로 binding 못했을 경우 발생 */
@@ -174,10 +174,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		MethodArgumentTypeMismatchException ex) {
 
 		log.error("MethodArgumentTypeMismatchException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = CommonErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
-		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
+		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/** CustomException 예외 처리 */
@@ -185,10 +185,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<GlobalResponse> handleCustomException(CustomException ex) {
 
 		log.error("CustomException : {}", ex.getMessage(), ex);
-		final ErrorCode errorCode = ex.getErrorCode();
-		final ErrorResponse errorResponse = ErrorResponse.of(errorCode.name(), errorCode.getMessage());
-		final GlobalResponse response = GlobalResponse.fail(errorCode.getHttpStatus().value(), errorResponse);
-		return ResponseEntity.status(errorCode.getHttpStatus()).body(response);
+		final ErrorCodeStatus errorCodeStatus = ex.getErrorCodeStatus();
+		final ErrorResponse errorResponse = ErrorResponse.of(errorCodeStatus.name(), errorCodeStatus.getMessage());
+		final GlobalResponse response = GlobalResponse.fail(errorCodeStatus.getHttpStatus().value(), errorResponse);
+		return ResponseEntity.status(errorCodeStatus.getHttpStatus()).body(response);
 	}
 
 	/** 500번대 에러 처리 */
@@ -196,7 +196,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<GlobalResponse> handleException(Exception ex) {
 
 		log.error("Internal Server Error : {}", ex.getMessage(), ex);
-		final ErrorCode internalServerError = CommonErrorCode.INTERNAL_SERVER_ERROR;
+		final ErrorCodeStatus internalServerError = ErrorCode.INTERNAL_SERVER_ERROR;
 		final ErrorResponse errorResponse = ErrorResponse.of(ex.getClass().getSimpleName(), internalServerError.getMessage());
 		final GlobalResponse response = GlobalResponse.fail(internalServerError.getHttpStatus().value(), errorResponse);
 		return ResponseEntity.status(internalServerError.getHttpStatus()).body(response);

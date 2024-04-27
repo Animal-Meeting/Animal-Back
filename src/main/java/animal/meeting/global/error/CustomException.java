@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class CustomException extends RuntimeException implements Serializable {
 
-	private final transient ErrorCode errorCode;
+	private final transient ErrorCodeStatus errorCodeStatus;
 
-	public CustomException(ErrorCode errorCode) {
-		super(errorCode.getMessage());
-		this.errorCode = errorCode;
+	public CustomException(ErrorCodeStatus errorCodeStatus) {
+		super(errorCodeStatus.getMessage());
+		this.errorCodeStatus = errorCodeStatus;
 	}
 }

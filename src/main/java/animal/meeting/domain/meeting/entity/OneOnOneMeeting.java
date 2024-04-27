@@ -19,7 +19,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OneOnOneMeeting extends MeetingDetails implements MeetingGroup{
+@Getter
+public class OneOnOneMeeting extends MeetingDetails{
 
 	@Id
 	@UuidGenerator
@@ -28,8 +29,6 @@ public class OneOnOneMeeting extends MeetingDetails implements MeetingGroup{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user1;
-
-
 
 	@Override
 	public void addUser(List<User> userList) {

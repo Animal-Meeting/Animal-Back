@@ -1,6 +1,8 @@
 package animal.meeting.domain.user.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,7 @@ import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
-import animal.meeting.global.error.constants.MeetingErrorCode;
-import animal.meeting.global.error.constants.UserErrorCode;
+import animal.meeting.global.error.constants.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +28,7 @@ public class UserService {
 
 	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 
-		validateUserCountAndGroupType(requests, groupType);
+		validateRegistration(requests, groupType);
 		List<User> userList = processRegistraion(requests);
 		meetingService.joinMeeting(userList, groupType);
 	}
@@ -60,9 +61,14 @@ public class UserService {
 		User user =
 			userRepository
 				.findByPhoneNumber(request.phoneNumber())
-				.orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		return LoginResponse.of(user);
+	}
+
+	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
+		validateUserCountAndGroupType(requests, groupType);
+		validatePhoneNumber(requests);
 	}
 
 	private void validateUserCountAndGroupType(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
@@ -70,7 +76,19 @@ public class UserService {
 		int intputUserCount = requests.size();
 
 		if (expectedUserCount != intputUserCount) {
-			throw new CustomException(MeetingErrorCode.INVALID_MEETING_PARAMETERS);
+			throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
+		}
+	}
+
+	private void validatePhoneNumber(List<UserRegisterRequest> requests) {
+		Set<String> phoneNumbers = new HashSet<>();
+
+		for (UserRegisterRequest request : requests) {
+			String phoneNumber = request.phoneNumber();
+
+			if (!phoneNumbers.add(phoneNumber)) {
+				throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
+			}
 		}
 	}
 }
