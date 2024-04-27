@@ -14,11 +14,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ThreeOnThreeMeeting extends MeetingDetails implements MeetingGroup{
+@Getter
+public class ThreeOnThreeMeeting extends MeetingDetails{
 	@Id
 	@UuidGenerator
 	private String id;

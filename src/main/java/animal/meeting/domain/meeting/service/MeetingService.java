@@ -1,5 +1,6 @@
 package animal.meeting.domain.meeting.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,9 +10,10 @@ import animal.meeting.domain.meeting.entity.OneOnOneMeeting;
 import animal.meeting.domain.meeting.entity.ThreeOnThreeMeeting;
 import animal.meeting.domain.meeting.entity.TwoOnTwoMeeting;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
+import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.meeting.repository.OneOnOneRepository;
-import animal.meeting.domain.meeting.repository.ThreeOneThreeRepository;
-import animal.meeting.domain.meeting.repository.TwoOneTwoRepository;
+import animal.meeting.domain.meeting.repository.ThreeOnThreeRepository;
+import animal.meeting.domain.meeting.repository.TwoOnTwoRepository;
 import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.global.error.CustomException;
@@ -24,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MeetingService {
 	private final OneOnOneRepository oneOnOneRepository;
-	private final TwoOneTwoRepository twoOneTwoRepository;
-	private final ThreeOneThreeRepository threeOneThreeRepository;
+	private final TwoOnTwoRepository twoOnTwoRepository;
+	private final ThreeOnThreeRepository threeOnThreeRepository;
 
 	public void joinMeeting(List<User> userList, MeetingGroupType groupType) {
 
@@ -57,9 +59,23 @@ public class MeetingService {
 		if (meeting instanceof OneOnOneMeeting oneOnOneMeeting) {
 			oneOnOneRepository.save(oneOnOneMeeting);
 		} else if (meeting instanceof TwoOnTwoMeeting twoOnTwoMeeting) {
-			twoOneTwoRepository.save(twoOnTwoMeeting);
+			twoOnTwoRepository.save(twoOnTwoMeeting);
 		} else if (meeting instanceof ThreeOnThreeMeeting threeOnThreeMeeting) {
-			threeOneThreeRepository.save(threeOnThreeMeeting);
+			threeOnThreeRepository.save(threeOnThreeMeeting);
 		}
+	}
+
+
+	public List<MeetingGroup> getMeetingResultList(Long userId) {
+		List<OneOnOneMeeting> oneOnOneMeetings = oneOnOneRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
+		List<TwoOnTwoMeeting> twoOnTwoMeetings = twoOnTwoRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
+		List<ThreeOnThreeMeeting> threeOnThreeMeetings = threeOnThreeRepository.findByUserIdAndStatus(userId, MeetingStatus.WAITING);
+
+		List<MeetingGroup> meetings = new ArrayList<>();
+		meetings.addAll(oneOnOneMeetings);
+		meetings.addAll(twoOnTwoMeetings);
+		meetings.addAll(threeOnThreeMeetings);
+
+		return meetings;
 	}
 }
