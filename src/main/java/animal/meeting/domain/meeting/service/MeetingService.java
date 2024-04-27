@@ -15,7 +15,7 @@ import animal.meeting.domain.meeting.repository.TwoOneTwoRepository;
 import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.global.error.CustomException;
-import animal.meeting.global.error.constants.MeetingErrorCode;
+import animal.meeting.global.error.constants.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +49,7 @@ public class MeetingService {
 			case THREE_ON_THREE:
 				return ThreeOnThreeMeeting.create(groupGender);
 			default:
-				throw new CustomException(MeetingErrorCode.INVALID_MEETING_PARAMETERS);
+				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
 		}
 	}
 

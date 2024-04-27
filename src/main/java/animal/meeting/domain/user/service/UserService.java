@@ -15,8 +15,7 @@ import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
-import animal.meeting.global.error.constants.MeetingErrorCode;
-import animal.meeting.global.error.constants.UserErrorCode;
+import animal.meeting.global.error.constants.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -62,7 +61,7 @@ public class UserService {
 		User user =
 			userRepository
 				.findByPhoneNumber(request.phoneNumber())
-				.orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		return LoginResponse.of(user);
 	}
@@ -77,7 +76,7 @@ public class UserService {
 		int intputUserCount = requests.size();
 
 		if (expectedUserCount != intputUserCount) {
-			throw new CustomException(MeetingErrorCode.INVALID_MEETING_PARAMETERS);
+			throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
 		}
 	}
 
@@ -90,9 +89,9 @@ public class UserService {
 			String phoneNumber = request.phoneNumber();
 
 			if (!phoneNumbers.add(phoneNumber)) {
-				throw new CustomException(UserErrorCode.DUPLICATED_PHONE_NUMBER);
+				throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
 			} else if (!userNames.add(userName) && !phoneNumbers.add(phoneNumber)) {
-				throw new CustomException(UserErrorCode.DUPLICATED_NAME_AND_PHONE_NUMBER);
+				throw new CustomException(ErrorCode.DUPLICATED_NAME_AND_PHONE_NUMBER);
 			}
 		}
 	}
