@@ -66,14 +66,12 @@ public class MeetingService {
 	}
 
 
-	public List<MeetingGroup> getMeetingResultList(Long userId) {
-		List<OneOnOneMeeting> oneOnOneMeetings = oneOnOneRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
-		List<TwoOnTwoMeeting> twoOnTwoMeetings = twoOnTwoRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
+	public List<ThreeOnThreeMeeting> getMeetingResultList(Long userId) {
+		// List<OneOnOneMeeting> oneOnOneMeetings = oneOnOneRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
+		// List<TwoOnTwoMeeting> twoOnTwoMeetings = twoOnTwoRepository.findByUserIdAndStatus(userId, MeetingStatus.COMPLETED);
 		List<ThreeOnThreeMeeting> threeOnThreeMeetings = threeOnThreeRepository.findByUserIdAndStatus(userId, MeetingStatus.WAITING);
 
-		List<MeetingGroup> meetings = new ArrayList<>();
-		meetings.addAll(oneOnOneMeetings);
-		meetings.addAll(twoOnTwoMeetings);
+		List<ThreeOnThreeMeeting> meetings = new ArrayList<>();
 		meetings.addAll(threeOnThreeMeetings);
 
 		return meetings;
