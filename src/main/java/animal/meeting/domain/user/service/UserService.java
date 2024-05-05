@@ -11,6 +11,8 @@ import animal.meeting.domain.meeting.service.MeetingService;
 import animal.meeting.domain.user.dto.request.LoginRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.dto.response.LoginResponse;
+import animal.meeting.domain.user.dto.response.SecretKeyResponse;
+import animal.meeting.domain.user.entity.SecretKey;
 import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 	private final MeetingService meetingService;
+	private final SecretKey secretKey;
 
 	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 
@@ -90,5 +93,9 @@ public class UserService {
 				throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
 			}
 		}
+	}
+
+	public SecretKeyResponse checkValidUser(Long inputSecretKey) {
+		return SecretKeyResponse.from(secretKey.isValidSecretKey(inputSecretKey));
 	}
 }
