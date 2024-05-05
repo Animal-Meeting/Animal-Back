@@ -32,31 +32,32 @@ public class UserService {
 	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 
 		validateRegistration(requests, groupType);
-		List<User> userList = processRegistraion(requests);
+		List<User> userList = processRegistraion(requests, groupType);
 		meetingService.joinMeeting(userList, groupType);
 	}
 
-	private List<User> processRegistraion(List<UserRegisterRequest> requests) {
+	private List<User> processRegistraion(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 		return requests.stream()
-			.map(this::createOrUpdateUser)
+			.map(request -> createOrUpdateUser(request, groupType))
 			.toList();
 	}
 
-	private User createOrUpdateUser(UserRegisterRequest request) {
+	private User createOrUpdateUser(UserRegisterRequest request, MeetingGroupType groupType) {
 		return userRepository.findByPhoneNumber(request.phoneNumber())
-			.map(existingUser -> updateUser(existingUser, request))
-			.orElseGet(() -> createUser(request));
+			.map(existingUser -> updateUser(existingUser, request, groupType))
+			.orElseGet(() -> createUser(request, groupType));
 	}
 
-	private User createUser(UserRegisterRequest request) {
-		User newUser = User.create(request);
+	private User createUser(UserRegisterRequest request, MeetingGroupType groupType) {
+		User newUser = User.create(request, groupType);
 		return userRepository.save(newUser);
 	}
 
-	private User updateUser(User user, UserRegisterRequest request) {
+	private User updateUser(User user, UserRegisterRequest request, MeetingGroupType groupType) {
 		UserInfo.SELF_ANIMAL_TYPE.executeUpdate(user, request.selfAnimalType());
 		UserInfo.FIRST_ANIMAL_TYPE.executeUpdate(user, request.firstAnimalType());
 		UserInfo.SECOND_ANIMAL_TYPE.executeUpdate(user, request.secondAnimalType());
+		user.changeMeetingGroupType(groupType);
 		return userRepository.save(user);
 	}
 

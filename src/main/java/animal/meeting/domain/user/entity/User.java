@@ -1,6 +1,7 @@
 package animal.meeting.domain.user.entity;
 
 import animal.meeting.domain.BaseAuditEntity;
+import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
@@ -44,6 +45,9 @@ public class User extends BaseAuditEntity {
 	@Enumerated(EnumType.STRING)
 	private AnimalType selfAnimalType;
 
+	@Enumerated(EnumType.STRING)
+	private MeetingGroupType groupType;
+
 	@Builder(access = AccessLevel.PRIVATE)
 	private User(
 		String name,
@@ -51,17 +55,20 @@ public class User extends BaseAuditEntity {
 		Gender gender,
 		AnimalType firstAnimalType,
 		AnimalType secondAnimalType,
-		AnimalType selfAnimalType) {
+		AnimalType selfAnimalType,
+		MeetingGroupType groupType) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
 		this.firstAnimalType = firstAnimalType;
 		this.secondAnimalType = secondAnimalType;
 		this.selfAnimalType = selfAnimalType;
+		this.groupType = groupType;
 	}
 
 	public static User create(
-		UserRegisterRequest request
+		UserRegisterRequest request,
+		MeetingGroupType groupType
 	) {
 		return User.builder()
 			.name(request.name())
@@ -70,6 +77,7 @@ public class User extends BaseAuditEntity {
 			.firstAnimalType(request.firstAnimalType())
 			.secondAnimalType(request.secondAnimalType())
 			.selfAnimalType(request.selfAnimalType())
+			.groupType(groupType)
 			.build();
 	}
 
@@ -85,5 +93,8 @@ public class User extends BaseAuditEntity {
 		this.selfAnimalType = selfAnimalType;
 	}
 
+	public void changeMeetingGroupType(MeetingGroupType groupType) {
+		this.groupType = groupType;
+	}
 }
 
