@@ -38,7 +38,6 @@ public class MeetingService {
 	public void joinMeeting(List<User> userList, MeetingGroupType groupType) {
 		Gender groupGender = getFirstUserGender(userList);
 		MeetingGroup meeting = createMeetingGroupByType(groupType, groupGender);
-
 		meeting.addUser(userList);
 		saveMeeting(meeting);
 	}
@@ -91,13 +90,23 @@ public class MeetingService {
 	}
 
 	private String getMeetingGroupIdByUser(User user) {
-		switch (user.getGroupType()) {
+		MeetingGroupType groupType = user.getGroupType();
+		switch (groupType) {
 			case ONE_ON_ONE:
-				return getOneOnOneGroupId(user);
+				return oneOnOneRepository
+					.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+					.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND))
+					.getId();
 			case TWO_ON_TWO:
-				return getTwoOnTwoGroupId(user);
+				return twoOnTwoRepository
+					.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+					.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND))
+					.getId();
 			case THREE_ON_THREE:
-				return geThreeOnThreeGroupId(user);
+				return threeOnThreeRepository
+					.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+					.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND))
+					.getId();
 			default:
 				throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
 		}
@@ -156,38 +165,5 @@ public class MeetingService {
 			return matchingResult.getManGroupId();
 		}
 		return matchingResult.getGirlGroupId();
-	}
-
-	private OneOnOneMeeting getOneOnOneGroupByUser(User user) {
-		return oneOnOneRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private String getOneOnOneGroupId(User user) {
-		OneOnOneMeeting oneOnOneMeeting = getOneOnOneGroupByUser(user);
-		return oneOnOneMeeting.getId();
-	}
-
-	private TwoOnTwoMeeting getTwoOnTwoGroupByUser(User user) {
-		return twoOnTwoRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private String getTwoOnTwoGroupId(User user) {
-		TwoOnTwoMeeting twoOnTwoMeeting = getTwoOnTwoGroupByUser(user);
-		return twoOnTwoMeeting.getId();
-	}
-
-	private ThreeOnThreeMeeting getThreeOnThreeGroupByUser(User user) {
-		return threeOnThreeRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private String geThreeOnThreeGroupId(User user) {
-		ThreeOnThreeMeeting threeOnThreeMeeting = getThreeOnThreeGroupByUser(user);
-		return threeOnThreeMeeting.getId();
 	}
 }
