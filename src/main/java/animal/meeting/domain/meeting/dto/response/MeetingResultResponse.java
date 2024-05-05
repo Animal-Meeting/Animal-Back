@@ -2,14 +2,27 @@ package animal.meeting.domain.meeting.dto.response;
 
 import java.util.List;
 
-import animal.meeting.domain.meeting.entity.OneOnOneMeeting;
-import animal.meeting.domain.meeting.entity.ThreeOnThreeMeeting;
-import animal.meeting.domain.meeting.entity.TwoOnTwoMeeting;
+import animal.meeting.domain.meeting.entity.MatchingResult;
+import animal.meeting.domain.meeting.entity.ResultUser;
+import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 
 public record MeetingResultResponse(
-	List<OneOnOneMeeting> oneOnOneMeetings,
-	List<TwoOnTwoMeeting> twoOnTwoMeetings,
-	List<ThreeOnThreeMeeting> threeOnThreeMeetings
+	List<ResultUser> femaleUsers,
+	List<ResultUser> maleUsers,
+	String kakaoLink,
+	MeetingGroupType meetingGroupType
+
 ) {
+	public static MeetingResultResponse from(
+		List<ResultUser> femaleUsers,
+		List<ResultUser> maleUsers,
+		MatchingResult matchingResult) {
+		return new MeetingResultResponse(
+			femaleUsers,
+			maleUsers,
+			matchingResult.getKakaoLink(),
+			matchingResult.getMeetingType()
+		);
+	}
 
 }

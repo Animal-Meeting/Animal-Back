@@ -1,7 +1,5 @@
 package animal.meeting.domain.meeting.entity;
 
-import java.util.UUID;
-
 import org.hibernate.annotations.Comment;
 
 import animal.meeting.domain.BaseTimeEntity;
@@ -13,8 +11,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class MatchingResult extends BaseTimeEntity {
 
 	@Id
@@ -23,11 +25,11 @@ public class MatchingResult extends BaseTimeEntity {
 
 	@Comment("남자 그룹 ID")
 	@Column(nullable = false)
-	private UUID manGroupId;
+	private String manGroupId;
 
 	@Comment("여자 그룹 ID")
 	@Column(nullable = false)
-	private UUID girlGroupId;
+	private String girlGroupId;
 
 	@Comment("미팅 타입")
 	@Enumerated(EnumType.STRING)
