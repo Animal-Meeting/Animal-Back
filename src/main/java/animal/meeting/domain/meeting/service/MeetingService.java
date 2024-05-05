@@ -78,12 +78,17 @@ public class MeetingService {
 		MatchingResult matchingResult = getMatchingResult(myMeetingGroupId);
 		String otherMeetingGroupId = getOtherMeetingGroupId(matchingResult, myMeetingGroupId);
 
-		List<ResultUser> femalesList = getMatchedParticipantsDetails(myMeetingGroupId, user.getGroupType());
-		List<ResultUser> malesList = getMatchedParticipantsDetails(otherMeetingGroupId, user.getGroupType());
+		List<ResultUser> femaleList = getMatchedParticipantsDetails(myMeetingGroupId, user.getGroupType());
+		List<ResultUser> maleList = getMatchedParticipantsDetails(otherMeetingGroupId, user.getGroupType());
 
-		return MeetingResultResponse.from(femalesList, malesList, matchingResult);
+		if (user.getGender() == Gender.MALE) {
+			List<ResultUser> temp = femaleList;
+			femaleList = maleList;
+			maleList = temp;
+		}
+
+		return MeetingResultResponse.from(femaleList, maleList, matchingResult);
 	}
-
 
 	private String getMeetingGroupIdByUser(User user) {
 		switch (user.getGroupType()) {
