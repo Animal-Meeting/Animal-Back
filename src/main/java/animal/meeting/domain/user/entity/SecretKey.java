@@ -11,9 +11,9 @@ public class SecretKey {
 	private final long secretKey3;
 
 	public SecretKey(
-		@Value("${secret.key1}") long secretKey1,
-		@Value("${secret.key2}") long secretKey2,
-		@Value("${secret.key3}") long secretKey3) {
+		@Value("${SECRET_KEY_1}") long secretKey1,
+		@Value("${SECRET_KEY_2}") long secretKey2,
+		@Value("${SECRET_KEY_3}") long secretKey3) {
 		this.secretKey1 = secretKey1;
 		this.secretKey2 = secretKey2;
 		this.secretKey3 = secretKey3;
