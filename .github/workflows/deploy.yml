@@ -33,7 +33,7 @@ jobs:
 #          echo "${{ secrets.PROPERTIES }}" > ./application.properties
 #        shell: bash
 
-s
+
       - name: Make .env
         run: |
           # root 경로에 env파일 생성
