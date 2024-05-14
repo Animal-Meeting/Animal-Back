@@ -52,5 +52,5 @@ checkstyle {
 }
 bootJar {
 	// 프로파일에 따라서 application-prod.yml 파일 사용
-	environment("spring_profiles_active", "prod")
+	environment['SPRING_PROFILES_ACTIVE'] = 'prod'
 }

@@ -1,0 +1,32 @@
+# 프로그램 실행 시 테이블 update
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  datasource:
+    url: jdbc:mysql://${{secrets.MYSQL_HOST}}:${{secrets.MYSQL_PORT}}/${{secrets.DB_NAME}}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${{secrets.MYSQL_USERNAME}}
+    password: ${{secrets.MYSQL_PASSWORD}}
+
+
+# 로깅 설정
+logging:
+  level:
+    org:
+      springframework: ERROR
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+
+SECRET_KEY_1: ${{ secrets.SECRET_KEY_1 }}
+SECRET_KEY_2: ${{ secrets.SECRET_KEY_2 }}
+SECRET_KEY_3: ${{ secrets.SECRET_KEY_3 }}
