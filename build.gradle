@@ -50,15 +50,3 @@ checkstyle {
 	configFile = file("config/checkstyle/naver-checkstyle-rules.xml")
 	configProperties = ["suppressionFile": "config/checkstyle/naver-checkstyle-suppression.xml"]
 }
-
-// profile 옵션을 줬으면 그 옵션, 없으면 "prod"
-def profile = project.hasProperty("profile") ? project.property("profile").toString() : "prod"
-
-sourceSets {
-	main {
-		resources {
-			// 맨 마지막 "src/main/resources/resources-${profile}" 추가 ⭐️
-			srcDirs = ["$frontDir/build", "$projectDir/src/main/resources", "src/main/resources/application-${profile}"]
-		}
-	}
-}
