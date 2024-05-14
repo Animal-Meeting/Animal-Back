@@ -33,14 +33,7 @@ jobs:
 #          echo "${{ secrets.PROPERTIES }}" > ./application.properties
 #        shell: bash
 
-
-      - name: Make application.yml
-        run: |
-          touch ./.env
-          echo "$ENV" >./.env
-          ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        shell: bash
-
+s
       - name: Make .env
         run: |
           # root 경로에 env파일 생성
