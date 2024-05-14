@@ -46,7 +46,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Gradle로 빌드 실행
-        run: ./gradlew bootjar
+        run: ./gradlew bootjar -Pspring.profiles.active=prod
 
       #프로젝트 zip파일로 압축
       - name: Make Zip File
