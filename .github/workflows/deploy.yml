@@ -33,16 +33,6 @@ jobs:
 #          echo "${{ secrets.PROPERTIES }}" > ./application.properties
 #        shell: bash
 
-
-      - name: Make .env
-        run: |
-          # root 경로에 env파일 생성
-          touch ./.env
-          echo "$ENV" >./.env
-        env:
-          ENV: ${{ secrets.ENV }}
-        shell: bash
-
       - name: Gradle 권한 부여
         run: chmod +x gradlew
 
