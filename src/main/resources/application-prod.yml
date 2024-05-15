@@ -16,6 +16,7 @@ spring:
     username: hong
     password: 00000000
 
+
 #    url: jdbc:mysql://${{secrets.MYSQL_HOST}}:${{secrets.MYSQL_PORT}}/${{secrets.DB_NAME}}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: ${{secrets.MYSQL_USERNAME}}
