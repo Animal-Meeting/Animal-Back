@@ -66,7 +66,9 @@ public class UserService {
 			userRepository
 				.findByPhoneNumber(request.phoneNumber())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+		/*
+		 TODO : 이름과 전화번호가 같을 때 성공 리턴해주기
+		 */
 		return LoginResponse.of(user);
 	}
 
