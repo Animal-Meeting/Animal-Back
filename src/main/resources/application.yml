@@ -21,10 +21,3 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-
-logging:
-  level:
-    org:
-      springframework:
-        security: trace
-        web: DEBUG
