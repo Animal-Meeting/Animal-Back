@@ -16,6 +16,7 @@ spring:
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
 
+
 # 로깅 설정
 logging:
   level:
