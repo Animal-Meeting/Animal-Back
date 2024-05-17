@@ -10,10 +10,8 @@ public class Cors implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins("*")
+			.allowedOriginPatterns("*")  // 허용할 오리진 패턴을 지정
 			.allowedMethods("GET", "POST", "PUT", "DELETE")
-			.allowedHeaders("*")
-			.allowCredentials(true)
-			.maxAge(3600);
+			.allowCredentials(true);
 	}
 }
