@@ -26,4 +26,8 @@ public abstract class MeetingDetails extends BaseAuditEntity implements MeetingG
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	protected Gender gender;
+
+	public void changeStatus(MeetingStatus status) {
+		this.status =  status;
+	}
 }

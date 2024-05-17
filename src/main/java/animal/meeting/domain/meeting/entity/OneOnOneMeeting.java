@@ -1,5 +1,6 @@
 package animal.meeting.domain.meeting.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -33,6 +34,16 @@ public class OneOnOneMeeting extends MeetingDetails{
 	@Override
 	public void addUser(List<User> userList) {
 		this.user1 = userList.get(0);
+	}
+
+	@Override
+	public List<User> getUserList() {
+		return Arrays.asList(user1);
+	}
+
+	@Override
+	public String getGroupId() {
+		return this.id;
 	}
 
 	@Builder(access = AccessLevel.PRIVATE)

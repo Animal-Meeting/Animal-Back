@@ -6,4 +6,8 @@ import animal.meeting.domain.user.entity.User;
 
 public interface MeetingGroup {
 	void addUser(List<User> userList);
+
+	List<User> getUserList();
+
+	String getGroupId();
 }

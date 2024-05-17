@@ -1,17 +1,13 @@
 package animal.meeting.domain.meeting.entity;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
+@AllArgsConstructor
 public class ProgressingGroup {
 	private String groupId;
-	private List<String> opponentGourpList;
+	private int weightValue;
 }

@@ -1,6 +1,10 @@
 package animal.meeting.domain.meeting.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,7 @@ import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
 import animal.meeting.domain.meeting.entity.MatchingResult;
 import animal.meeting.domain.meeting.entity.MeetingGroup;
 import animal.meeting.domain.meeting.entity.OneOnOneMeeting;
+import animal.meeting.domain.meeting.entity.ProgressingGroup;
 import animal.meeting.domain.meeting.entity.ResultUser;
 import animal.meeting.domain.meeting.entity.ThreeOnThreeMeeting;
 import animal.meeting.domain.meeting.entity.TwoOnTwoMeeting;
@@ -19,6 +24,7 @@ import animal.meeting.domain.meeting.repository.OneOnOneRepository;
 import animal.meeting.domain.meeting.repository.ThreeOnThreeRepository;
 import animal.meeting.domain.meeting.repository.TwoOnTwoRepository;
 import animal.meeting.domain.user.entity.User;
+import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
@@ -98,11 +104,11 @@ public class MeetingService {
 		MeetingGroupType groupType = user.getGroupType();
 		switch (groupType) {
 			case ONE_ON_ONE:
-				return getOneOnOneGroupId(user);
+				return getOneOnOneGroupByUser(user).getId();
 			case TWO_ON_TWO:
-				return getTwoOnTwoGroupId(user);
+				return getTwoOnTwoGroupByUser(user).getId();
 			case THREE_ON_THREE:
-				return getThreeOnThreeGroupId(user);
+				return getThreeOnThreeGroupByUser(user).getId();
 			default:
 				throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
 		}
@@ -169,20 +175,10 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	private String getOneOnOneGroupId(User user) {
-		OneOnOneMeeting oneOnOneMeeting = getOneOnOneGroupByUser(user);
-		return oneOnOneMeeting.getId();
-	}
-
 	private TwoOnTwoMeeting getTwoOnTwoGroupByUser(User user) {
 		return twoOnTwoRepository
 			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private String getTwoOnTwoGroupId(User user) {
-		TwoOnTwoMeeting twoOnTwoMeeting = getTwoOnTwoGroupByUser(user);
-		return twoOnTwoMeeting.getId();
 	}
 
 	private ThreeOnThreeMeeting getThreeOnThreeGroupByUser(User user) {
@@ -191,27 +187,68 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	private String getThreeOnThreeGroupId(User user) {
-		ThreeOnThreeMeeting threeOnThreeMeeting = getThreeOnThreeGroupByUser(user);
-		return threeOnThreeMeeting.getId();
-	}
-
 	public void progressMatching(Long password) {
 
+		// 보안코드 검사
 		checkMeetingProgressPwd(password);
 
-		Long maleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
-		Long femaleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
+		// Long maleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
+		// Long femaleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
 
 		List<ThreeOnThreeMeeting> threeMaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
 		List<ThreeOnThreeMeeting> threeFemaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
 
-		for (int i = 0 ; i < threeFemaleGroup.size() ; i++) {
-			ThreeOnThreeMeeting elem = threeFemaleGroup.get(i);
+		// weight값 계산해서 key : female group id, value : male group의 리스트
+		Map<String, List<ProgressingGroup>> map = createProgressingGroupMap(threeFemaleGroup, threeMaleGroup);
 
+		List<MatchingResult> matchingResultsToSave = new ArrayList<>();
+
+		for (int standard = 3 ; standard >= 0.5 ; standard-=0.5) {
+			for (ThreeOnThreeMeeting femaleGroup : threeFemaleGroup) {
+				if (femaleGroup.getStatus() == MeetingStatus.COMPLETED) {
+					continue;
+				}
+				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getId());
+				for (ProgressingGroup elem : progressingGroups) {
+					if (standard == elem.getWeightValue()) {
+						// null일 때 막기
+						ThreeOnThreeMeeting maleGroup = getThreeOneThreeGroupById(threeMaleGroup, elem.getGroupId());
+						if (maleGroup.getStatus() != MeetingStatus.COMPLETED) {
+							MatchingResult matchingResult = MatchingResult.create(maleGroup.getId(), femaleGroup.getId(),MeetingGroupType.THREE_ON_THREE);
+							matchingResultsToSave.add(matchingResult);
+							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
+							maleGroup.changeStatus(MeetingStatus.COMPLETED);
+						}
+					}
+				}
+
+			}
 		}
-		// 미팅 알고리즘
+		matchingResultRepository.saveAll(matchingResultsToSave);
+	}
+	private Map<String, List<ProgressingGroup>> createProgressingGroupMap(List<? extends MeetingGroup> femaleGroups, List<? extends MeetingGroup> maleGroups) {
+		Map<String, List<ProgressingGroup>> map = new HashMap<>();
 
+		for (MeetingGroup femaleGroup : femaleGroups) {
+			List<User> femaleUsers = femaleGroup.getUserList();
+			List<ProgressingGroup> progressingGroupList = new ArrayList<>();
+
+			for (MeetingGroup maleGroup : maleGroups) {
+				List<User> maleUsers = maleGroup.getUserList();
+				int weightValue = calculateWeight(femaleUsers, maleUsers);
+				progressingGroupList.add(new ProgressingGroup(maleGroup.getGroupId(), weightValue));
+			}
+			map.put(femaleGroup.getGroupId(), progressingGroupList);
+		}
+		return map;
+	}
+
+	private ThreeOnThreeMeeting getThreeOneThreeGroupById(List<ThreeOnThreeMeeting> groupList, String groupId) {
+		Optional<ThreeOnThreeMeeting> matchingGroup = groupList.stream()
+			.filter(group -> group.getId().equals(groupId))
+			.findFirst();
+
+		return matchingGroup.orElse(null);
 	}
 
 	private void checkMeetingProgressPwd(Long password) {
@@ -220,13 +257,23 @@ public class MeetingService {
 		}
 	}
 
-	private void applyMatchingAlgorithm() {
-		// 1순위 가중치 1, 2순위 가중치 0.5로 해서 계산. 3대3이면 3,2,1 매칭, 2대2면 2,1 매칭, 1대1엔 1 /나머지 랜덤.
-		// waiting인거 가져오기.
-		// 남자, 여자 수.
-		// 여자 기준으로 돌리기.
-		// 자신 그룹 id, List 조건에 맞는 그룹아이디
-		// dfs돌리기
-		// 결과값 result에 저장 및 상태값 변경
+	private int calculateWeight(List<User> femaleUsers, List<User> maleUsers) {
+		int sum = 0;
+
+		for (User female : femaleUsers) {
+			AnimalType firstAnimal = female.getFirstAnimalType();
+			AnimalType secondAnimal = female.getSecondAnimalType();
+			for (User male : maleUsers) {
+				if (firstAnimal == male.getSelfAnimalType()) {
+					sum += 1;
+					break;
+				}
+				else if (secondAnimal == male.getSecondAnimalType()) {
+					sum += 0.5;
+					break;
+				}
+			}
+		}
+		return sum;
 	}
 }
