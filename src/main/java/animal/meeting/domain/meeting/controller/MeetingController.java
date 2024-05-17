@@ -26,10 +26,10 @@ public class MeetingController {
 	}
 
 	@PostMapping("/matching-start")
-	public void progressMatching(
+	public void progressAllMatching(
 		@RequestParam
 		@NotNull
 		Long password) {
-		meetingService.progressMatching(password);
+		meetingService.progressAllMatching(password);
 	}
 }

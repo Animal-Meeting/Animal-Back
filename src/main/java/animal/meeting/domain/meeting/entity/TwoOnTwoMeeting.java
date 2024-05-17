@@ -51,6 +51,16 @@ public class TwoOnTwoMeeting extends MeetingDetails{
 		return this.id;
 	}
 
+	@Override
+	public MeetingStatus getStatus() {
+		return this.status;
+	}
+
+	@Override
+	public void changeStatus(MeetingStatus status) {
+		this.status =  status;
+	}
+
 	@Builder(access = AccessLevel.PRIVATE)
 	private TwoOnTwoMeeting(
 		MeetingStatus status,

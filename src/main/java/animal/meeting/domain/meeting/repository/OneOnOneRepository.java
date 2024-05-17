@@ -1,5 +1,6 @@
 package animal.meeting.domain.meeting.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface OneOnOneRepository extends JpaRepository<OneOnOneMeeting, Strin
 	Optional<OneOnOneMeeting> findMostRecentTodayByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
 
 	Long countByGenderAndStatus(Gender gender, MeetingStatus status);
+	List<OneOnOneMeeting> findAllByGenderAndStatus(Gender gender, MeetingStatus status);
 }

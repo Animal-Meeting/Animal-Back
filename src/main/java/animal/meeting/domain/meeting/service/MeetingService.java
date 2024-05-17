@@ -187,46 +187,65 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	public void progressMatching(Long password) {
-
-		// 보안코드 검사
+	public void progressAllMatching(Long password) {
 		checkMeetingProgressPwd(password);
 
-		// Long maleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
-		// Long femaleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
+		matchSingleMeetingByType(MeetingGroupType.ONE_ON_ONE);
+		matchSingleMeetingByType(MeetingGroupType.TWO_ON_TWO);
+		matchSingleMeetingByType(MeetingGroupType.THREE_ON_THREE);
+	}
 
-		List<ThreeOnThreeMeeting> threeMaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
-		List<ThreeOnThreeMeeting> threeFemaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
+	private void matchSingleMeetingByType(MeetingGroupType groupType) {
+		List<? extends MeetingGroup> maleGroups = getMeetingGroupsByType(groupType, Gender.MALE, MeetingStatus.WAITING);
+		List<? extends MeetingGroup> femaleGroups = getMeetingGroupsByType(groupType, Gender.FEMALE, MeetingStatus.WAITING);
 
 		// weight값 계산해서 key : female group id, value : male group의 리스트
-		Map<String, List<ProgressingGroup>> map = createProgressingGroupMap(threeFemaleGroup, threeMaleGroup);
+		Map<String, List<ProgressingGroup>> map = createWeightedGroupMap(femaleGroups, maleGroups);
 
 		List<MatchingResult> matchingResultsToSave = new ArrayList<>();
 
-		for (int standard = 3 ; standard >= 0.5 ; standard-=0.5) {
-			for (ThreeOnThreeMeeting femaleGroup : threeFemaleGroup) {
+		for (int standard = groupType.getUserCount() ; standard >= 0.5 ; standard-=0.5) {
+			for (MeetingGroup femaleGroup : femaleGroups) {
 				if (femaleGroup.getStatus() == MeetingStatus.COMPLETED) {
 					continue;
 				}
-				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getId());
+				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getGroupId());
 				for (ProgressingGroup elem : progressingGroups) {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
-						ThreeOnThreeMeeting maleGroup = getThreeOneThreeGroupById(threeMaleGroup, elem.getGroupId());
+						MeetingGroup maleGroup = getThreeOneThreeGroupById(maleGroups, elem.getGroupId());
+
 						if (maleGroup.getStatus() != MeetingStatus.COMPLETED) {
-							MatchingResult matchingResult = MatchingResult.create(maleGroup.getId(), femaleGroup.getId(),MeetingGroupType.THREE_ON_THREE);
+							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
-							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
-							maleGroup.changeStatus(MeetingStatus.COMPLETED);
+							changeGroupTypeToCompleted(femaleGroup, maleGroup);
 						}
 					}
 				}
-
 			}
 		}
 		matchingResultRepository.saveAll(matchingResultsToSave);
 	}
-	private Map<String, List<ProgressingGroup>> createProgressingGroupMap(List<? extends MeetingGroup> femaleGroups, List<? extends MeetingGroup> maleGroups) {
+
+	private void changeGroupTypeToCompleted(MeetingGroup femaleGroup, MeetingGroup maleGroup) {
+		femaleGroup.changeStatus(MeetingStatus.COMPLETED);
+		maleGroup.changeStatus(MeetingStatus.COMPLETED);
+	}
+
+	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {
+		switch (groupType) {
+			case ONE_ON_ONE:
+				return oneOnOneRepository.findAllByGenderAndStatus(gender, status);
+			case TWO_ON_TWO:
+				return twoOnTwoRepository.findAllByGenderAndStatus(gender, status);
+			case THREE_ON_THREE:
+				return threeOnThreeRepository.findAllByGenderAndStatus(gender, status);
+			default:
+				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
+		}
+	}
+
+	private Map<String, List<ProgressingGroup>> createWeightedGroupMap(List<? extends MeetingGroup> femaleGroups, List<? extends MeetingGroup> maleGroups) {
 		Map<String, List<ProgressingGroup>> map = new HashMap<>();
 
 		for (MeetingGroup femaleGroup : femaleGroups) {
@@ -235,6 +254,7 @@ public class MeetingService {
 
 			for (MeetingGroup maleGroup : maleGroups) {
 				List<User> maleUsers = maleGroup.getUserList();
+
 				int weightValue = calculateWeight(femaleUsers, maleUsers);
 				progressingGroupList.add(new ProgressingGroup(maleGroup.getGroupId(), weightValue));
 			}
@@ -243,9 +263,9 @@ public class MeetingService {
 		return map;
 	}
 
-	private ThreeOnThreeMeeting getThreeOneThreeGroupById(List<ThreeOnThreeMeeting> groupList, String groupId) {
-		Optional<ThreeOnThreeMeeting> matchingGroup = groupList.stream()
-			.filter(group -> group.getId().equals(groupId))
+	private MeetingGroup getThreeOneThreeGroupById(List<? extends MeetingGroup> groupList, String groupId) {
+		Optional<? extends MeetingGroup> matchingGroup = groupList.stream()
+			.filter(group -> group.getGroupId().equals(groupId))
 			.findFirst();
 
 		return matchingGroup.orElse(null);
