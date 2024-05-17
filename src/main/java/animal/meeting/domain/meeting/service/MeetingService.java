@@ -172,19 +172,19 @@ public class MeetingService {
 
 	private OneOnOneMeeting getOneOnOneGroupByUser(User user) {
 		return oneOnOneRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
 	private TwoOnTwoMeeting getTwoOnTwoGroupByUser(User user) {
 		return twoOnTwoRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
 	private ThreeOnThreeMeeting getThreeOnThreeGroupByUser(User user) {
 		return threeOnThreeRepository
-			.findMostRecentTodayByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 

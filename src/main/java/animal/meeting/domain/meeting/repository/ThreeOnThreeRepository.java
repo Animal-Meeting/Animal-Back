@@ -12,9 +12,8 @@ import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.user.entity.type.Gender;
 
 public interface ThreeOnThreeRepository extends JpaRepository<ThreeOnThreeMeeting, String> {
-	@Query("SELECT t FROM ThreeOnThreeMeeting t WHERE t.user1.id = :userId AND t.status = :status AND DATE(t.createdAt) = CURRENT_DATE ORDER BY t.createdAt DESC")
-	Optional<ThreeOnThreeMeeting> findMostRecentTodayByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
-
+	@Query("SELECT t FROM ThreeOnThreeMeeting t WHERE (t.user1.id = :userId OR t.user2.id = :userId OR t.user3.id = :userId) AND t.status = :status ORDER BY t.createdAt DESC LIMIT 1")
+	Optional<ThreeOnThreeMeeting> findMostRecentByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
 
 	List<ThreeOnThreeMeeting> findAllByGenderAndStatus(Gender gender, MeetingStatus status);
 }

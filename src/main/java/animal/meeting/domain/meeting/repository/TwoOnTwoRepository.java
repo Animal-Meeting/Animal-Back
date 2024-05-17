@@ -12,8 +12,8 @@ import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.user.entity.type.Gender;
 
 public interface TwoOnTwoRepository extends JpaRepository<TwoOnTwoMeeting, String> {
-	@Query("SELECT t FROM TwoOnTwoMeeting t WHERE t.user1.id = :userId AND t.status = :status AND DATE(t.createdAt) = CURRENT_DATE ORDER BY t.createdAt DESC")
-	Optional<TwoOnTwoMeeting> findMostRecentTodayByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
+	@Query("SELECT t FROM TwoOnTwoMeeting t WHERE (t.user1.id = :userId OR t.user2.id = :userId) AND t.status = :status ORDER BY t.createdAt DESC LIMIT 1")
+	Optional<TwoOnTwoMeeting> findMostRecentByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
 
 	List<TwoOnTwoMeeting> findAllByGenderAndStatus(Gender gender, MeetingStatus status);
 }
