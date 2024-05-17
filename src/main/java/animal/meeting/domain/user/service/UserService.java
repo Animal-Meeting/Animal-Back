@@ -18,15 +18,19 @@ import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class UserService {
 	private final UserRepository userRepository;
 	private final MeetingService meetingService;
 	private final SecretKey secretKey;
+
+	public UserService(UserRepository userRepository, MeetingService meetingService, SecretKey secretKey) {
+		this.userRepository = userRepository;
+		this.meetingService = meetingService;
+		this.secretKey = secretKey;
+	}
 
 	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 
