@@ -18,6 +18,6 @@ fi
 
 echo "> $JAR_PATH 배포" #3
 nohup java -jar \
-        -Dspring.profiles.active=prod \
+        -Dspring.profiles.active=prod -Duser.timezone=Asia/Seoul\
         build/libs/$JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
 
