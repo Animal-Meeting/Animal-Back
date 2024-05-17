@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import animal.meeting.domain.meeting.dto.request.ProgressingMeetingRequest;
 import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
 import animal.meeting.domain.meeting.entity.MatchingResult;
 import animal.meeting.domain.meeting.entity.MeetingGroup;
@@ -187,10 +188,10 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	public void progressAllMatching(Long password, MeetingGroupType type) {
-		checkMeetingProgressPwd(password);
+	public void progressAllMatching(ProgressingMeetingRequest request) {
+		checkMeetingProgressPwd(request.password());
 
-		switch (type) {
+		switch (request.groupType()) {
 			case ONE_ON_ONE:
 				matchSingleMeetingByType(MeetingGroupType.ONE_ON_ONE);
 				break;
