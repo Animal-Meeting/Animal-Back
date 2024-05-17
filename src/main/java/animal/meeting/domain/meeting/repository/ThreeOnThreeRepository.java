@@ -15,7 +15,6 @@ public interface ThreeOnThreeRepository extends JpaRepository<ThreeOnThreeMeetin
 	@Query("SELECT t FROM ThreeOnThreeMeeting t WHERE t.user1.id = :userId AND t.status = :status AND DATE(t.createdAt) = CURRENT_DATE ORDER BY t.createdAt DESC")
 	Optional<ThreeOnThreeMeeting> findMostRecentTodayByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
 
-	Long countByGenderAndStatus(Gender gender, MeetingStatus status);
 
 	List<ThreeOnThreeMeeting> findAllByGenderAndStatus(Gender gender, MeetingStatus status);
 }
