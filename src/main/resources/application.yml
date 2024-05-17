@@ -1,8 +1,10 @@
 spring:
   profiles:
+    active: local
     group:
       dev: "dev"
       prod: "prod"
+      local: "local"
 
   jpa:
     hibernate:
