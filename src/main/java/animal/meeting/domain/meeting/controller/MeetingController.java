@@ -1,12 +1,14 @@
 package animal.meeting.domain.meeting.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
+import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.meeting.service.MeetingService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,10 @@ public class MeetingController {
 	public void progressAllMatching(
 		@RequestParam
 		@NotNull
-		Long password) {
-		meetingService.progressAllMatching(password);
+		Long password,
+		@RequestParam
+		@NotNull
+		MeetingGroupType type) {
+		meetingService.progressAllMatching(password, type);
 	}
 }

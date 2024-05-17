@@ -187,12 +187,22 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	public void progressAllMatching(Long password) {
+	public void progressAllMatching(Long password, MeetingGroupType type) {
 		checkMeetingProgressPwd(password);
 
-		matchSingleMeetingByType(MeetingGroupType.ONE_ON_ONE);
-		matchSingleMeetingByType(MeetingGroupType.TWO_ON_TWO);
-		matchSingleMeetingByType(MeetingGroupType.THREE_ON_THREE);
+		switch (type) {
+			case ONE_ON_ONE:
+				matchSingleMeetingByType(MeetingGroupType.ONE_ON_ONE);
+				break;
+			case TWO_ON_TWO:
+				matchSingleMeetingByType(MeetingGroupType.TWO_ON_TWO);
+				break;
+			case THREE_ON_THREE:
+				matchSingleMeetingByType(MeetingGroupType.THREE_ON_THREE);
+				break;
+			default:
+				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
+		}
 	}
 
 	private void matchSingleMeetingByType(MeetingGroupType groupType) {
@@ -204,7 +214,7 @@ public class MeetingService {
 
 		List<MatchingResult> matchingResultsToSave = new ArrayList<>();
 
-		for (int standard = groupType.getUserCount() ; standard >= 0.5 ; standard-=0.5) {
+		for (double standard = groupType.getUserCount() ; standard >= 0 ; standard-=0.5) {
 			for (MeetingGroup femaleGroup : femaleGroups) {
 				if (femaleGroup.getStatus() == MeetingStatus.COMPLETED) {
 					continue;
@@ -213,23 +223,18 @@ public class MeetingService {
 				for (ProgressingGroup elem : progressingGroups) {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
-						MeetingGroup maleGroup = getThreeOneThreeGroupById(maleGroups, elem.getGroupId());
-
+						MeetingGroup maleGroup = getGroupById(maleGroups, elem.getGroupId());
 						if (maleGroup.getStatus() != MeetingStatus.COMPLETED) {
 							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
-							changeGroupTypeToCompleted(femaleGroup, maleGroup);
+							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
+							maleGroup.changeStatus(MeetingStatus.COMPLETED);
 						}
 					}
 				}
 			}
 		}
 		matchingResultRepository.saveAll(matchingResultsToSave);
-	}
-
-	private void changeGroupTypeToCompleted(MeetingGroup femaleGroup, MeetingGroup maleGroup) {
-		femaleGroup.changeStatus(MeetingStatus.COMPLETED);
-		maleGroup.changeStatus(MeetingStatus.COMPLETED);
 	}
 
 	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {
@@ -263,7 +268,7 @@ public class MeetingService {
 		return map;
 	}
 
-	private MeetingGroup getThreeOneThreeGroupById(List<? extends MeetingGroup> groupList, String groupId) {
+	private MeetingGroup getGroupById(List<? extends MeetingGroup> groupList, String groupId) {
 		Optional<? extends MeetingGroup> matchingGroup = groupList.stream()
 			.filter(group -> group.getGroupId().equals(groupId))
 			.findFirst();

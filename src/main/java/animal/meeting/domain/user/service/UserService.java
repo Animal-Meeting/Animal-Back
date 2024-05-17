@@ -14,7 +14,6 @@ import animal.meeting.domain.user.dto.response.LoginResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.SecretKey;
 import animal.meeting.domain.user.entity.User;
-import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
@@ -38,14 +37,8 @@ public class UserService {
 
 	private List<User> processRegistraion(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 		return requests.stream()
-			.map(request -> createOrUpdateUser(request, groupType))
+			.map(request -> createUser(request, groupType))
 			.toList();
-	}
-
-	private User createOrUpdateUser(UserRegisterRequest request, MeetingGroupType groupType) {
-		return userRepository.findByPhoneNumber(request.phoneNumber())
-			.map(existingUser -> updateUser(existingUser, request, groupType))
-			.orElseGet(() -> createUser(request, groupType));
 	}
 
 	private User createUser(UserRegisterRequest request, MeetingGroupType groupType) {
@@ -53,28 +46,17 @@ public class UserService {
 		return userRepository.save(newUser);
 	}
 
-	private User updateUser(User user, UserRegisterRequest request, MeetingGroupType groupType) {
-		UserInfo.SELF_ANIMAL_TYPE.executeUpdate(user, request.selfAnimalType());
-		UserInfo.FIRST_ANIMAL_TYPE.executeUpdate(user, request.firstAnimalType());
-		UserInfo.SECOND_ANIMAL_TYPE.executeUpdate(user, request.secondAnimalType());
-		user.changeMeetingGroupType(groupType);
-		return userRepository.save(user);
-	}
-
 	public LoginResponse login(LoginRequest request) {
 		User user =
 			userRepository
-				.findByPhoneNumber(request.phoneNumber())
+				.findByNameAndPhoneNumber(request.name(), request.phoneNumber())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		/*
-		 TODO : 이름과 전화번호가 같을 때 성공 리턴해주기
-		 */
 		return LoginResponse.of(user);
 	}
 
 	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
 		validateUserCountAndGroupType(requests, groupType);
-		validatePhoneNumber(requests);
+		validateDupilicatedPhoneNumber(requests);
 	}
 
 	private void validateUserCountAndGroupType(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
@@ -86,7 +68,7 @@ public class UserService {
 		}
 	}
 
-	private void validatePhoneNumber(List<UserRegisterRequest> requests) {
+	private void validateDupilicatedPhoneNumber(List<UserRegisterRequest> requests) {
 		Set<String> phoneNumbers = new HashSet<>();
 
 		for (UserRegisterRequest request : requests) {
