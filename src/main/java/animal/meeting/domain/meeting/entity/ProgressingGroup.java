@@ -9,5 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProgressingGroup {
 	private String groupId;
-	private int weightValue;
+	private double weightValue;
 }

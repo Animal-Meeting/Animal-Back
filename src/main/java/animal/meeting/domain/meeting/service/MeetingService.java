@@ -44,7 +44,7 @@ public class MeetingService {
 	private final UserRepository userRepository;
 
 	@Value("${MATCHING_PASSWORD}")
-	private Long secretKey;
+	private Long matchingPassword;
 
 	public void joinMeeting(List<User> userList, MeetingGroupType groupType) {
 		Gender groupGender = getFirstUserGender(userList);
@@ -260,7 +260,7 @@ public class MeetingService {
 			for (MeetingGroup maleGroup : maleGroups) {
 				List<User> maleUsers = maleGroup.getUserList();
 
-				int weightValue = calculateWeight(femaleUsers, maleUsers);
+				double weightValue = calculateWeight(femaleUsers, maleUsers);
 				progressingGroupList.add(new ProgressingGroup(maleGroup.getGroupId(), weightValue));
 			}
 			map.put(femaleGroup.getGroupId(), progressingGroupList);
@@ -277,13 +277,13 @@ public class MeetingService {
 	}
 
 	private void checkMeetingProgressPwd(Long password) {
-		if (password != secretKey.longValue()) {
+		if (password != matchingPassword.longValue()) {
 			throw new CustomException(ErrorCode.MATCHING_PWD_NOT_MATCHED);
 		}
 	}
 
-	private int calculateWeight(List<User> femaleUsers, List<User> maleUsers) {
-		int sum = 0;
+	private double calculateWeight(List<User> femaleUsers, List<User> maleUsers) {
+		double sum = 0;
 
 		for (User female : femaleUsers) {
 			AnimalType firstAnimal = female.getFirstAnimalType();
