@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum MeetingStatus {
 
 	COMPLETED("매칭 완료"),
-	WAITING("매칭 대기");
+	WAITING("매칭 대기"),
+	FAIL("매칭 실패");
 
 	private final String value;
 }
