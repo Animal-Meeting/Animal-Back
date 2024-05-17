@@ -1,6 +1,7 @@
 package animal.meeting.domain.meeting.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +23,13 @@ public class MeetingController {
 		@NotNull
 		Long userId) {
 		return meetingService.getMeetingResultList(userId);
+	}
+
+	@PostMapping("/matching-start")
+	public void progressMatching(
+		@RequestParam
+		@NotNull
+		Long password) {
+		meetingService.progressMatching(password);
 	}
 }

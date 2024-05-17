@@ -2,6 +2,7 @@ package animal.meeting.domain.meeting.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
@@ -29,11 +30,15 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class MeetingService {
+
 	private final OneOnOneRepository oneOnOneRepository;
 	private final TwoOnTwoRepository twoOnTwoRepository;
 	private final ThreeOnThreeRepository threeOnThreeRepository;
 	private final MatchingResultRepository matchingResultRepository;
 	private final UserRepository userRepository;
+
+	@Value("${MATCHING_PASSWORD}")
+	private Long secretKey;
 
 	public void joinMeeting(List<User> userList, MeetingGroupType groupType) {
 		Gender groupGender = getFirstUserGender(userList);
@@ -97,7 +102,7 @@ public class MeetingService {
 			case TWO_ON_TWO:
 				return getTwoOnTwoGroupId(user);
 			case THREE_ON_THREE:
-				return geThreeOnThreeGroupId(user);
+				return getThreeOnThreeGroupId(user);
 			default:
 				throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
 		}
@@ -186,8 +191,42 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
-	private String geThreeOnThreeGroupId(User user) {
+	private String getThreeOnThreeGroupId(User user) {
 		ThreeOnThreeMeeting threeOnThreeMeeting = getThreeOnThreeGroupByUser(user);
 		return threeOnThreeMeeting.getId();
+	}
+
+	public void progressMatching(Long password) {
+
+		checkMeetingProgressPwd(password);
+
+		Long maleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
+		Long femaleCount = threeOnThreeRepository.countByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
+
+		List<ThreeOnThreeMeeting> threeMaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.MALE, MeetingStatus.WAITING);
+		List<ThreeOnThreeMeeting> threeFemaleGroup = threeOnThreeRepository.findAllByGenderAndStatus(Gender.FEMALE, MeetingStatus.WAITING);
+
+		for (int i = 0 ; i < threeFemaleGroup.size() ; i++) {
+			ThreeOnThreeMeeting elem = threeFemaleGroup.get(i);
+
+		}
+		// 미팅 알고리즘
+
+	}
+
+	private void checkMeetingProgressPwd(Long password) {
+		if (password != secretKey.longValue()) {
+			throw new CustomException(ErrorCode.MATCHING_PWD_NOT_MATCHED);
+		}
+	}
+
+	private void applyMatchingAlgorithm() {
+		// 1순위 가중치 1, 2순위 가중치 0.5로 해서 계산. 3대3이면 3,2,1 매칭, 2대2면 2,1 매칭, 1대1엔 1 /나머지 랜덤.
+		// waiting인거 가져오기.
+		// 남자, 여자 수.
+		// 여자 기준으로 돌리기.
+		// 자신 그룹 id, List 조건에 맞는 그룹아이디
+		// dfs돌리기
+		// 결과값 result에 저장 및 상태값 변경
 	}
 }

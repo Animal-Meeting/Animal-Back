@@ -22,7 +22,7 @@ public enum ErrorCode implements ErrorCodeStatus {
 	INVALID_MEETING_PARAMETERS(HttpStatus.BAD_REQUEST, "입력된 유저 수와 미팅타입이 일치하지 않습니다."),
 	GROUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "유저에 대한 미팅그룹을 찾을 수 없습니다."),
 	GROUP_NOT_MATCHED(HttpStatus.BAD_REQUEST, "그룹 정보가 잘못되었습니다."),
-
+	MATCHING_PWD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "패스워드가 올바르지 않습니다."),
 
 	// 유저 오류
 	DUPLICATED_PHONE_NUMBER(HttpStatus.BAD_REQUEST, "중복된 전화번호가 존재합니다."),
