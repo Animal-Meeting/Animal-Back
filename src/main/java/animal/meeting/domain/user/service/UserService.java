@@ -53,7 +53,7 @@ public class UserService {
 	public LoginResponse login(LoginRequest request) {
 		User user =
 			userRepository
-				.findByNameAndPhoneNumber(request.name(), request.phoneNumber())
+				.findMostRecentUserByNameAndPhoneNumber(request.name(), request.phoneNumber())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		return LoginResponse.of(user);
 	}
