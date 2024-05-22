@@ -39,3 +39,7 @@ logging:
 #      static: ap-southeast-2
 #    s3:
 #      bucket:
+
+SECRET_KEY_1: ${SECRET_KEY_1}
+SECRET_KEY_2: ${SECRET_KEY_2}
+SECRET_KEY_3: ${SECRET_KEY_3}
