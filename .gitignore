@@ -167,7 +167,7 @@ out/
 *.env
 *.DS_Store
 /src/main/generated
-/src/main/resources/*.yml
+/src/main/resources/application-prod.yml
 
 #env
 *.env
