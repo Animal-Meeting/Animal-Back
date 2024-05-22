@@ -29,3 +29,14 @@ logging:
 SECRET_KEY_1: ${{ secrets.SECRET_KEY_1 }}
 SECRET_KEY_2: ${{ secrets.SECRET_KEY_2 }}
 SECRET_KEY_3: ${{ secrets.SECRET_KEY_3 }}
+
+## AWS S3
+#cloud:
+#  aws:
+#    credentials:
+#      access-key:
+#      secret-key:
+#    region:
+#      static: ap-southeast-2
+#    s3:
+#      bucket:
