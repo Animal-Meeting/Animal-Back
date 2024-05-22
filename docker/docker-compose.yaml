@@ -1,0 +1,12 @@
+version: '3'
+services:
+  backend:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    container_name: animal-phone-container
+    environment:
+      - TZ=Asia/Seoul
+    env_file:
+      - /../.env

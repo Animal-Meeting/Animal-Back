@@ -26,10 +26,13 @@ jobs:
       - name: Make application.yml
         run: |
           cd ./src/main/resources
+          touch ./application.yml
           touch ./application-prod.yml
           echo "$APPLICATION_PROD" > ./application-prod.yml
+          echo "$APPLICATION" > ./application.yml
         env:
           APPLICATION_PROD: ${{ secrets.APPLICATION_PROD }}
+          APPLICATION: ${{ secrets.APPLICATION }}
         shell: bash
 
       - name: Gradle 권한 부여
@@ -61,9 +64,12 @@ jobs:
           --region ap-northeast-2 \
           ./animal-meeting-app-phone.zip s3://animal-meeting-bucket
 
-      # CodeDelploy에 배포를 요청합니다.
-      - name: Code Deploy 배포 요청
-        run: aws deploy create-deployment --application-name animal-meeting-codedeploy
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name animal-meeting-codedeploy-group
-          --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-app-phone.zip
+      - name: Deploy to Local Server
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.LOCAL_SERVER_HOST }}
+            username: ${{ secrets.LOCAL_SERVER_USER }}
+            password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
+            script: |
+              chmod +x //sluv/deploy_script.sh
+              echo ${{ secrets.LOCAL_SERVER_SUDO_PASSWORD }} | sudo -S /home/sluv/deploy_script.sh
