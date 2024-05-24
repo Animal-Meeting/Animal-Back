@@ -100,7 +100,7 @@ public class MeetingService {
 			maleList = temp;
 		}
 
-		return MeetingResultResponse.from(femaleList, maleList, matchingResult);
+		return MeetingResultResponse.of(femaleList, maleList, matchingResult);
 	}
 
 	private String getMeetingGroupIdByUser(User user) {
