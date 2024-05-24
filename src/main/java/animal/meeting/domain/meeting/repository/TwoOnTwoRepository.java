@@ -16,4 +16,9 @@ public interface TwoOnTwoRepository extends JpaRepository<TwoOnTwoMeeting, Strin
 	Optional<TwoOnTwoMeeting> findMostRecentByUserIdAndStatus(@Param("userId") Long userId, @Param("status") MeetingStatus status);
 
 	List<TwoOnTwoMeeting> findAllByGenderAndStatus(Gender gender, MeetingStatus status);
+	@Query("SELECT m FROM TwoOnTwoMeeting m WHERE m.status = :status AND DATE(m.createdAt) = CURDATE()")
+	List<TwoOnTwoMeeting> findMeetingsByStatusAndCreatedAtToday(@Param("status") MeetingStatus status);
+
+
+
 }
