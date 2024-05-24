@@ -5,6 +5,7 @@ import static java.util.UUID.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ public class S3Service {
     private final AmazonS3 s3client;
     private final String bucketName;
 
+    @Autowired
     public S3Service(@Value("${cloud.aws.s3.bucket}") String bucketName, AmazonS3 s3client) {
         this.bucketName = bucketName;
         this.s3client = s3client;
