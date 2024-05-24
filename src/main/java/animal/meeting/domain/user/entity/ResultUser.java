@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 public class ResultUser {
 
-	private String phoneNumber;
+	private Long userId;
 	private AnimalType selfAnimalType;
 
 	public static ResultUser create(User user) {
 		return ResultUser.builder()
-			.phoneNumber(user.getPhoneNumber())
+			.userId(user.getId())
 			.selfAnimalType(user.getSelfAnimalType())
 			.build();
 	}

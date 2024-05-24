@@ -13,7 +13,7 @@ public record MeetingResultResponse(
 	MeetingGroupType meetingGroupType
 
 ) {
-	public static MeetingResultResponse from(
+	public static MeetingResultResponse of(
 		List<ResultUser> femaleUsers,
 		List<ResultUser> maleUsers,
 		MatchingResult matchingResult) {
