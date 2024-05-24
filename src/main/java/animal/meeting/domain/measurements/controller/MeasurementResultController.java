@@ -4,6 +4,7 @@ import animal.meeting.domain.measurements.dto.request.FemaleMeasurementResultReq
 import animal.meeting.domain.measurements.dto.request.MaleMeasurementResultRequest;
 import animal.meeting.domain.measurements.dto.response.MeasurementResultResponse;
 import animal.meeting.domain.measurements.service.MeasurementResultService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,12 @@ public class MeasurementResultController {
     private final MeasurementResultService measurementResultService;
 
     @PostMapping("/upload/male")
-    public void uploadMaleMeasurementResult(@ModelAttribute MaleMeasurementResultRequest request) throws IOException {
+    public void uploadMaleMeasurementResult(@Valid @ModelAttribute MaleMeasurementResultRequest request) throws IOException {
         measurementResultService.saveMaleMeasurementResult(request);
     }
 
     @PostMapping("/upload/female")
-    public void uploadFemaleMeasurementResult(@ModelAttribute FemaleMeasurementResultRequest request) throws IOException {
+    public void uploadFemaleMeasurementResult(@Valid @ModelAttribute FemaleMeasurementResultRequest request) throws IOException {
         measurementResultService.saveFemaleMeasurementResult(request);
     }
 
@@ -31,7 +32,7 @@ public class MeasurementResultController {
     public MeasurementResultResponse downloadMeasurementResult(
         @RequestParam
         @NotNull
-        String studentId) throws IOException {
+        String studentId)  {
         return measurementResultService.getMaleMeasurementResult(studentId);
     }
 }
