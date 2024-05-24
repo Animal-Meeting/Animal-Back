@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MaleMeasurementResultRepository extends JpaRepository<MaleMeasurementResult, Long> {
-	Optional<MaleMeasurementResult> findFemaleMeasurementResultByStudentId(String studentId);
+	Optional<MaleMeasurementResult> findMaleMeasurementResultByStudentId(String studentId);
 }
