@@ -11,9 +11,11 @@ import animal.meeting.domain.meeting.service.MeetingService;
 import animal.meeting.domain.user.dto.request.LoginRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.dto.response.LoginResponse;
+import animal.meeting.domain.user.dto.response.ParticipantResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.SecretKey;
 import animal.meeting.domain.user.entity.User;
+import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
@@ -55,7 +57,7 @@ public class UserService {
 			userRepository
 				.findMostRecentUserByNameAndPhoneNumber(request.name(), request.phoneNumber())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		return LoginResponse.of(user);
+		return LoginResponse.from(user);
 	}
 
 	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
@@ -86,5 +88,12 @@ public class UserService {
 
 	public SecretKeyResponse checkValidUser(Long inputSecretKey) {
 		return SecretKeyResponse.from(secretKey.isValidSecretKey(inputSecretKey));
+	}
+
+	public ParticipantResponse getParticipantCount() {
+		Long manCount = userRepository.countByGenderAndCreatedAtToday(Gender.MALE);
+		Long girlCount =  userRepository.countByGenderAndCreatedAtToday(Gender.FEMALE);
+
+		return ParticipantResponse.of(manCount, girlCount);
 	}
 }

@@ -7,7 +7,7 @@ public record LoginResponse(
 	String name,
 	String phoneNumber)
 {
-	public static LoginResponse of(User user) {
+	public static LoginResponse from(User user) {
 		return new LoginResponse(
 			user.getId(),
 			user.getName(),
