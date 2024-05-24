@@ -49,12 +49,12 @@ public class MeasurementResultService {
                 femaleResult.getPhotoUrl(),
                 femaleResult.getAnimalType(),
                 List.of(
-                    new MeasurementResultResponse.AnimalScore("dog", femaleResult.getDogScore()),
-                    new MeasurementResultResponse.AnimalScore("cat", femaleResult.getCatScore()),
-                    new MeasurementResultResponse.AnimalScore("rabbit", femaleResult.getRabbitScore()),
-                    new MeasurementResultResponse.AnimalScore("desertFox", femaleResult.getDesertFoxScore()),
-                    new MeasurementResultResponse.AnimalScore("deer", femaleResult.getDeerScore()),
-                    new MeasurementResultResponse.AnimalScore("hamster", femaleResult.getHamsterScore())
+                    new MeasurementResultResponse.AnimalScore("girl_dog", femaleResult.getDogScore()),
+                    new MeasurementResultResponse.AnimalScore("girl_cat", femaleResult.getCatScore()),
+                    new MeasurementResultResponse.AnimalScore("girl_rabbit", femaleResult.getRabbitScore()),
+                    new MeasurementResultResponse.AnimalScore("girl_desertFox", femaleResult.getDesertFoxScore()),
+                    new MeasurementResultResponse.AnimalScore("girl_deer", femaleResult.getDeerScore()),
+                    new MeasurementResultResponse.AnimalScore("girl_hamster", femaleResult.getHamsterScore())
                 )
             );
         }
@@ -63,12 +63,12 @@ public class MeasurementResultService {
                 maleResult.getPhotoUrl(),
                 maleResult.getAnimalType(),
                 List.of(
-                    new MeasurementResultResponse.AnimalScore("dog", maleResult.getDogScore()),
-                    new MeasurementResultResponse.AnimalScore("cat", maleResult.getCatScore()),
-                    new MeasurementResultResponse.AnimalScore("rabbit", maleResult.getRabbitScore()),
-                    new MeasurementResultResponse.AnimalScore("dinosaur", maleResult.getDinosaurScore()),
-                    new MeasurementResultResponse.AnimalScore("bear", maleResult.getBearScore()),
-                    new MeasurementResultResponse.AnimalScore("wolf", maleResult.getWolfScore())
+                    new MeasurementResultResponse.AnimalScore("man_dog", maleResult.getDogScore()),
+                    new MeasurementResultResponse.AnimalScore("man_cat", maleResult.getCatScore()),
+                    new MeasurementResultResponse.AnimalScore("man_rabbit", maleResult.getRabbitScore()),
+                    new MeasurementResultResponse.AnimalScore("man_dinosaur", maleResult.getDinosaurScore()),
+                    new MeasurementResultResponse.AnimalScore("man_bear", maleResult.getBearScore()),
+                    new MeasurementResultResponse.AnimalScore("man_wolf", maleResult.getWolfScore())
                 )
             );
         }
