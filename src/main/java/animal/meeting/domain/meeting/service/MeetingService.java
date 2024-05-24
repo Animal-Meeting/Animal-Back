@@ -15,7 +15,8 @@ import animal.meeting.domain.meeting.entity.MatchingResult;
 import animal.meeting.domain.meeting.entity.MeetingGroup;
 import animal.meeting.domain.meeting.entity.OneOnOneMeeting;
 import animal.meeting.domain.meeting.entity.ProgressingGroup;
-import animal.meeting.domain.meeting.entity.ResultUser;
+import animal.meeting.domain.user.dto.response.UnMatchedUserResponse;
+import animal.meeting.domain.user.entity.ResultUser;
 import animal.meeting.domain.meeting.entity.ThreeOnThreeMeeting;
 import animal.meeting.domain.meeting.entity.TwoOnTwoMeeting;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
@@ -24,6 +25,7 @@ import animal.meeting.domain.meeting.repository.MatchingResultRepository;
 import animal.meeting.domain.meeting.repository.OneOnOneRepository;
 import animal.meeting.domain.meeting.repository.ThreeOnThreeRepository;
 import animal.meeting.domain.meeting.repository.TwoOnTwoRepository;
+import animal.meeting.domain.user.entity.UnMatchedUser;
 import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
@@ -217,7 +219,7 @@ public class MeetingService {
 
 		for (double standard = groupType.getUserCount() ; standard >= 0 ; standard-=0.5) {
 			for (MeetingGroup femaleGroup : femaleGroups) {
-				if (femaleGroup.getStatus() == MeetingStatus.COMPLETED) {
+				if (femaleGroup.getStatus() != MeetingStatus.WAITING) {
 					continue;
 				}
 				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getGroupId());
@@ -225,7 +227,7 @@ public class MeetingService {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
 						MeetingGroup maleGroup = getGroupById(maleGroups, elem.getGroupId());
-						if (maleGroup.getStatus() != MeetingStatus.COMPLETED) {
+						if (maleGroup != null && maleGroup.getStatus() == MeetingStatus.WAITING) {
 							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
 							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
@@ -301,5 +303,37 @@ public class MeetingService {
 			}
 		}
 		return sum;
+	}
+
+	public UnMatchedUserResponse getUnmatchedUsers() {
+
+		List<UnMatchedUser> unMatchedResultList = new ArrayList<>();
+
+		for (MeetingGroupType groupType : MeetingGroupType.values()) {
+			List<? extends MeetingGroup> meetingGroups = getTodayMeetingGroupsByStatus(groupType, MeetingStatus.WAITING);
+
+
+			for (MeetingGroup group : meetingGroups) {
+				List<User> unMatchedUserList = group.getUserList();
+
+				for (User user : unMatchedUserList) {
+					UnMatchedUser unMatchedUser = UnMatchedUser.create(user);
+					unMatchedResultList.add(unMatchedUser);
+				}
+			}
+		}
+		return new UnMatchedUserResponse(unMatchedResultList);
+	}
+	private List<? extends MeetingGroup> getTodayMeetingGroupsByStatus(MeetingGroupType groupType, MeetingStatus status) {
+		switch (groupType) {
+			case ONE_ON_ONE:
+				return oneOnOneRepository.findMeetingsByStatusAndCreatedAtToday(status);
+			case TWO_ON_TWO:
+				return twoOnTwoRepository.findMeetingsByStatusAndCreatedAtToday(status);
+			case THREE_ON_THREE:
+				return threeOnThreeRepository.findMeetingsByStatusAndCreatedAtToday(status);
+			default:
+				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
+		}
 	}
 }
