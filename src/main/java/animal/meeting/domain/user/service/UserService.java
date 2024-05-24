@@ -57,6 +57,11 @@ public class UserService {
 			userRepository
 				.findMostRecentUserByNameAndPhoneNumber(request.name(), request.phoneNumber())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		if (!meetingService.hasUserMatchedGroup(user)) {
+			throw new CustomException(ErrorCode.MATCHING_GROUP_NOT_FOUND);
+		}
+
 		return LoginResponse.from(user);
 	}
 
