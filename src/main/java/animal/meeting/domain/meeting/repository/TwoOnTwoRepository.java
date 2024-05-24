@@ -19,6 +19,4 @@ public interface TwoOnTwoRepository extends JpaRepository<TwoOnTwoMeeting, Strin
 	@Query("SELECT m FROM TwoOnTwoMeeting m WHERE m.status = :status AND DATE(m.createdAt) = CURDATE()")
 	List<TwoOnTwoMeeting> findMeetingsByStatusAndCreatedAtToday(@Param("status") MeetingStatus status);
 
-
-
 }

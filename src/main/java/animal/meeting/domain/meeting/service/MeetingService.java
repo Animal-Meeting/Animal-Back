@@ -336,4 +336,22 @@ public class MeetingService {
 				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
 		}
 	}
+
+	public boolean hasUserMatchedGroup(User user) {
+		Optional<? extends MeetingGroup> matchedMeetingGroup = getMeetingGroupByUserAndStatus(user);
+		return matchedMeetingGroup.isPresent();
+	}
+
+	private Optional<? extends MeetingGroup> getMeetingGroupByUserAndStatus(User user) {
+		switch (user.getGroupType()) {
+			case ONE_ON_ONE:
+				return oneOnOneRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
+			case TWO_ON_TWO:
+				return twoOnTwoRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
+			case THREE_ON_THREE:
+				return threeOnThreeRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
+			default:
+				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
+		}
+	}
 }

@@ -20,6 +20,4 @@ public interface OneOnOneRepository extends JpaRepository<OneOnOneMeeting, Strin
 
 	@Query("SELECT m FROM OneOnOneMeeting m WHERE m.status = :status AND DATE(m.createdAt) = CURDATE()")
 	List<OneOnOneMeeting> findMeetingsByStatusAndCreatedAtToday(@Param("status") MeetingStatus status);
-
-
 }
