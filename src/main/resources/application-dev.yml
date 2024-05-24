@@ -29,17 +29,22 @@ logging:
           jdbc:
             bind: trace
 
-## AWS S3
-#cloud:
-#  aws:
-#    credentials:
-#      access-key:
-#      secret-key:
-#    region:
-#      static: ap-southeast-2
-#    s3:
-#      bucket:
-
 SECRET_KEY_1: ${SECRET_KEY_1}
 SECRET_KEY_2: ${SECRET_KEY_2}
 SECRET_KEY_3: ${SECRET_KEY_3}
+
+# 매칭 Password
+MATCHING_PASSWORD : ${MATCHING_PASSWORD}
+
+# AWS
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+    region:
+      static: ${AWS_S3_REGION}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+
+

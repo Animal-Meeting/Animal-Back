@@ -4,7 +4,6 @@ spring:
     group:
       dev: "dev"
       prod: "prod"
-      local: "local"
 
   jpa:
     hibernate:
