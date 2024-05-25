@@ -45,7 +45,7 @@ jobs:
           cp ./docker/docker-compose.green.yml ./deploy/
           cp appspec-blue-green.yml ./deploy/
           cp ./docker/Dockerfile ./deploy/
-          cp ./scripts/*.sh ./deploy/
+          cp ./scripts/deploy-blue-green.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./scripts/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
@@ -68,7 +68,8 @@ jobs:
 
       # CodeDelploy에 배포를 요청합니다.
       - name: Code Deploy 배포 요청
-        run: aws deploy create-deployment --application-name animal-meeting-codedeploy
+        run: |
+          aws deploy create-deployment --application-name animal-meeting-codedeploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name animal-meeting-codedeploy-group
           --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-blue-green-app.zip
