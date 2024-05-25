@@ -4,6 +4,6 @@ FROM openjdk:17
 #WORKDIR /app
 ARG JAR_FILE=/build/libs/*.jar
 ### JAR_FILE 경로에 해당하는 파일을 Docker 이미지 내부로 복사한다.
-COPY ${JAR_FILE} animal-meeting-app.jar
+COPY ${JAR_FILE} animal-meeting-blue-green-app.jar
 ### Docker 컨테이너가 시작될 때 실행할 명령을 지정한다.
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/animal-meeting-app.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/animal-meeting-blue-green-app.jar"]
