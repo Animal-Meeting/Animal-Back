@@ -71,5 +71,8 @@ jobs:
             username: ${{ secrets.LOCAL_SERVER_USER }}
             password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
             script: |
-              ./scripts/deploy_phone.sh
-              echo ${{ secrets.LOCAL_SERVER_SUDO_PASSWORD }} | sudo -S ./scripts/deploy_phone.sh
+              
+              echo "Host: ${{ secrets.LOCAL_SERVER_HOST }}"
+              echo "Username: root"
+              echo "Password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}"
+              ssh phone "./scripts/deploy_phone.sh"
