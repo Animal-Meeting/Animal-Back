@@ -76,9 +76,8 @@ jobs:
             touch ~/deploy_phone.sh  # 원격 경로에 파일 생성
             chmod +x ~/deploy_phone.sh  # 실행 권한을 부여합니다.
             echo "#!/bin/bash" > ~/deploy_phone.sh  # 스크립트 헤더 추가
-            cat ./scripts/deploy_phone.sh > ~/deploy_phone.sh  # 로컬 파일을 원격 서버로 복사
+            cat scripts/deploy_phone.sh > ~/deploy_phone.sh  # 로컬 파일을 원격 서버로 복사
             chmod +x ~/deploy_phone.sh  # 실행 권한을 부여합니다.
-
 
       - name: Deploy to Local Server
         uses: appleboy/ssh-action@master
