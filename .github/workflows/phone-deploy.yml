@@ -49,20 +49,21 @@ jobs:
 
         shell: bash
 
-      # AWS에 연결해줍니다.
-      - name: AWS 연결
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+#      # AWS에 연결해줍니다.
+#      - name: AWS 연결
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-northeast-2
+#
+#      # S3에 프로젝트를 업로드 합니다.
+#      - name: S3에 프로젝트 업로드
+#        run: |
+#          aws s3 cp \
+#          --region ap-northeast-2 \
+#          ./animal-meeting-app-phone.zip s3://animal-meeting-bucket
 
-      # S3에 프로젝트를 업로드 합니다.
-      - name: S3에 프로젝트 업로드
-        run: |
-          aws s3 cp \
-          --region ap-northeast-2 \
-          ./animal-meeting-app-phone.zip s3://animal-meeting-bucket
 
       - name: Deploy to Local Server
         uses: appleboy/ssh-action@master
@@ -72,5 +73,7 @@ jobs:
             username: ${{ secrets.LOCAL_SERVER_USER }}
             key : ${{ secrets.LOCAL_SSH_PRIVATE_KEY}}
             password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
+            source: ./scripts/deploy_phone.sh  # 로컬에서 복사할 스크립트 파일 경로
+            target: ./root/deploy_phone.sh
             script: |
-              ./scripts/deploy_phone.sh
+              ./root/deploy_phone.sh
