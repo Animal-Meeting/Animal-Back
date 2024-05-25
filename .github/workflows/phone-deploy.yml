@@ -68,11 +68,11 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
             host: ${{ secrets.LOCAL_SERVER_HOST }}
+            port: 4859
             username: ${{ secrets.LOCAL_SERVER_USER }}
             password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
             script: |
               
               echo "Host: ${{ secrets.LOCAL_SERVER_HOST }}"
-              echo "Username: root"
-              echo "Password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}"
+            
               ssh phone "./scripts/deploy_phone.sh"
