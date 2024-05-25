@@ -8,5 +8,3 @@ services:
     container_name: spring-green
     environment:
       - TZ=Asia/Seoul
-    env_file:
-      - .env

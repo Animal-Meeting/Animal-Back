@@ -12,5 +12,3 @@ services:
     container_name: spring-blue
     environment:
       - TZ=Asia/Seoul
-    env_file:
-      - .env
