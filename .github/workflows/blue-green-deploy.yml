@@ -45,7 +45,7 @@ jobs:
           cp ./docker/docker-compose.green.yml ./deploy/
           cp appspec-blue-green.yml ./deploy/
           cp ./docker/Dockerfile ./deploy/
-          cp ./scripts/deploy-blue-green.sh ./deploy/
+          cp ./scripts/*.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./scripts/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
