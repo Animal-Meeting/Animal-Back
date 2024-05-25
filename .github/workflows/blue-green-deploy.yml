@@ -47,7 +47,7 @@ jobs:
           cp ./docker/Dockerfile ./deploy/
           cp ./scripts/*.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
-          chmod +x ./deploy/deploy.sh
+          chmod +x ./scripts/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
           
 
