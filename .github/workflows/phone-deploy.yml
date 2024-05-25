@@ -64,6 +64,20 @@ jobs:
 #          --region ap-northeast-2 \
 #          ./animal-meeting-app-phone.zip s3://animal-meeting-bucket
 
+      - name: Create deploy script on remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: rong5026.iptime.org
+          port: 4859
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH 개인 키의 내용
+          password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
+          script: |
+            touch ~/deploy_phone.sh  # 원격 경로에 파일 생성
+            chmod +x ~/deploy_phone.sh  # 실행 권한을 부여합니다.
+            echo "#!/bin/bash" > ~/deploy_phone.sh  # 스크립트 헤더 추가
+            echo "echo 'Hello, world!'" >> ~/deploy_phone.sh  # 스크립트 내용 추가
+
 
       - name: Deploy to Local Server
         uses: appleboy/ssh-action@master
