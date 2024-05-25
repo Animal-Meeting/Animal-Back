@@ -227,11 +227,14 @@ public class MeetingService {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
 						MeetingGroup maleGroup = getGroupById(maleGroups, elem.getGroupId());
-						if (maleGroup != null && maleGroup.getStatus() == MeetingStatus.WAITING) {
+						if (maleGroup != null
+							&& maleGroup.getStatus() == MeetingStatus.WAITING
+							&& femaleGroup.getStatus() == MeetingStatus.WAITING) {
 							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
 							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
 							maleGroup.changeStatus(MeetingStatus.COMPLETED);
+							break;
 						}
 					}
 				}
