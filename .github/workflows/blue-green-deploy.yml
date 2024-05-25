@@ -47,7 +47,7 @@ jobs:
           cp ./scripts/*.sh ./deploy/
           cp ./appspec-blue-green.yml ./deploy/appspec.yml
           cp ./build/libs/*.jar ./deploy/
-          chmod +x ./scripts/deploy-blue-green.sh
+          chmod +x ./deploy/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
           
 
