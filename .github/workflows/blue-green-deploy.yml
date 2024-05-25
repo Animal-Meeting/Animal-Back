@@ -48,7 +48,7 @@ jobs:
           cp ./scripts/*.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./deploy/deploy.sh
-          zip -r -qq -j ./animal-meeting-app.zip ./deploy
+          zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
           
 
       # AWS에 연결해줍니다.
@@ -64,11 +64,11 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          ./animal-meeting-app.zip s3://animal-meeting-bucket
+          ./animal-meeting-blue-green-app.zip s3://animal-meeting-bucket
 
       # CodeDelploy에 배포를 요청합니다.
       - name: Code Deploy 배포 요청
         run: aws deploy create-deployment --application-name animal-meeting-codedeploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name animal-meeting-codedeploy-group
-          --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-app.zip
+          --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-blue-green-app.zip
