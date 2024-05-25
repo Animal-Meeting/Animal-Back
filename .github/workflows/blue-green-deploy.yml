@@ -69,7 +69,7 @@ jobs:
       # CodeDelploy에 배포를 요청합니다.
       - name: Code Deploy 배포 요청
         run: |
-          aws deploy create-deployment --application-name animal-meeting-codedeploy
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name animal-meeting-codedeploy-group
+          aws deploy create-deployment --application-name animal-meeting-codedeploy \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name animal-meeting-codedeploy-group \
           --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-blue-green-app.zip
