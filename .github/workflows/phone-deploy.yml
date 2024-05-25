@@ -44,7 +44,7 @@ jobs:
       #프로젝트 zip파일로 압축
       - name: Make Zip File
         run: |
-          chmod +x ./scripts/deploy.sh
+          chmod +x ./scripts/deploy_phone.sh
           zip -qq -r ./animal-meeting-app-phone.zip .
 
         shell: bash
@@ -71,5 +71,5 @@ jobs:
             username: ${{ secrets.LOCAL_SERVER_USER }}
             password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
             script: |
-              chmod +x //sluv/deploy_script.sh
-              echo ${{ secrets.LOCAL_SERVER_SUDO_PASSWORD }} | sudo -S /home/sluv/deploy_script.sh
+              ./scripts/deploy_phone.sh
+              echo ${{ secrets.LOCAL_SERVER_SUDO_PASSWORD }} | sudo -S ./scripts/deploy_phone.sh
