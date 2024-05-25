@@ -67,7 +67,7 @@ jobs:
       - name: Create deploy script on remote server
         uses: appleboy/ssh-action@master
         with:
-          host: rong5026.iptime.org
+          host: ${{ secrets.LOCAL_SERVER_HOST }}
           port: 4859
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH 개인 키의 내용
@@ -75,15 +75,15 @@ jobs:
           script: |
             chmod +x ~/deploy_phone.sh  # 실행 권한을 부여합니다.
 
-      - name: Deploy to Local Server
-        uses: appleboy/ssh-action@master
-        with:
-            host: ${{ secrets.LOCAL_SERVER_HOST }}
-            port: 4859
-            username: ${{ secrets.LOCAL_SERVER_USER }}
-            key : ${{ secrets.LOCAL_SSH_PRIVATE_KEY}}
-            password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
-            source: ./scripts/deploy_phone.sh  # 로컬에서 복사할 스크립트 파일 경로
-            target: ~/deploy_phone.sh
-            script: |
-              ~/deploy_phone.sh
+#      - name: Deploy to Local Server
+#        uses: appleboy/ssh-action@master
+#        with:
+#            host: ${{ secrets.LOCAL_SERVER_HOST }}
+#            port: 4859
+#            username: ${{ secrets.LOCAL_SERVER_USER }}
+#            key : ${{ secrets.LOCAL_SSH_PRIVATE_KEY}}
+#            password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
+#            source: ./scripts/deploy_phone.sh  # 로컬에서 복사할 스크립트 파일 경로
+#            target: ~/deploy_phone.sh
+#            script: |
+#              ~/deploy_phone.sh
