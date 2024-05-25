@@ -43,9 +43,9 @@ jobs:
           mkdir deploy
           cp ./docker/docker-compose.blue.yml ./deploy/
           cp ./docker/docker-compose.green.yml ./deploy/
-          cp appspec-blue-green.yml ./deploy/
           cp ./docker/Dockerfile ./deploy/
           cp ./scripts/*.sh ./deploy/
+          cp ./appspec-blue-green.yml ./deploy/appspec.yml
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./scripts/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
@@ -73,3 +73,14 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name animal-meeting-codedeploy-group \
           --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-blue-green-app.zip
+
+      - name: Make appspec.yml
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            cp appspec-staging.yml appspec.yml
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            cp appspec.yml appspec.yml
+          else
+            echo "Unsupported branch for deployment"
+            exit 1
+          fi
