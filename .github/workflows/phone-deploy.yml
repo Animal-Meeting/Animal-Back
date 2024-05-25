@@ -72,7 +72,5 @@ jobs:
             username: ${{ secrets.LOCAL_SERVER_USER }}
             password: ${{ secrets.LOCAL_SERVER_SSH_PASSWORD }}
             script: |
-              
               echo "Host: ${{ secrets.LOCAL_SERVER_HOST }}"
-            
               ssh phone "./scripts/deploy_phone.sh"
