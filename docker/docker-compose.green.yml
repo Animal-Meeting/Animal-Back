@@ -1,12 +1,12 @@
+#green
 version: '3'
 services:
   backend:
     build: .
-    restart: unless-stopped
     ports:
-      - "3000:8080"
-    container_name: animal-phone-container
+      - "8082:80"
+    container_name: spring-green
     environment:
       - TZ=Asia/Seoul
     env_file:
-      - /../.env
+      - .env
