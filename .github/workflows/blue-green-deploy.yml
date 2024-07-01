@@ -4,7 +4,7 @@ name: Blue Green 배포 using github actions
 on:
   push:
     # main branch에 push(merge)될 경우 실행됩니다.
-    branches: [ "main" ]
+    branches: [ "infra#39" ]
 
 permissions:
   contents: read
@@ -43,11 +43,11 @@ jobs:
           mkdir deploy
           cp ./docker/docker-compose.blue.yml ./deploy/
           cp ./docker/docker-compose.green.yml ./deploy/
-          cp ./appspec-blue-green.yml ./deploy/
           cp ./docker/Dockerfile ./deploy/
           cp ./scripts/*.sh ./deploy/
-          cp ./build/libs/*.jar ./deploy/
-          chmod +x ./scripts/deploy-blue-green.sh
+          cp ./appspec-blue-green.yml ./deploy/appspec.yml
+          cp ./build/libs/animal-meeting-blue-green-app.jar ./deploy/
+          chmod +x ./deploy/deploy-blue-green.sh
           zip -r -qq -j ./animal-meeting-blue-green-app.zip ./deploy
           
 
@@ -68,7 +68,8 @@ jobs:
 
       # CodeDelploy에 배포를 요청합니다.
       - name: Code Deploy 배포 요청
-        run: aws deploy create-deployment --application-name animal-meeting-codedeploy
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name animal-meeting-codedeploy-group
+        run: |
+          aws deploy create-deployment --application-name animal-meeting-codedeploy \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name animal-meeting-codedeploy-group \
           --s3-location bucket=animal-meeting-bucket,bundleType=zip,key=animal-meeting-blue-green-app.zip

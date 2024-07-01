@@ -58,4 +58,6 @@ checkstyle {
 	configFile = file("config/checkstyle/naver-checkstyle-rules.xml")
 	configProperties = ["suppressionFile": "config/checkstyle/naver-checkstyle-suppression.xml"]
 }
-
+bootJar {
+	archiveFileName = 'animal-meeting-blue-green-app.jar'
+}
