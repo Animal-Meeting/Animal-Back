@@ -141,7 +141,7 @@
 </div>
 <div align="center">
 
-| <img src="https://github.com/33ohoh/pestback/assets/77156858/780937fa-2c53-45cd-a201-ad90182f2fbf"  width="100%"> |
+| <img src="https://github.com/Animal-Meeting/Animal-Back/assets/77156858/89e63e8a-05af-4362-b4a9-b0839b0d6887"  width="100%"> |
 :-----------------------------------------------------------------------------------------------------------------------------:|
 |                                                            화면 1                                                           |                                                       
 
