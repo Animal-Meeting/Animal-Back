@@ -54,7 +54,7 @@
 - 프로젝트 이름 : 미팅해요 동물의 숲
 - 개발 배경 : 2024 세종대학교 축제 낮부스 운영
 - 개발 언어 : Java, Javascript
-- 프론트 : React, Redux
+- 프론트 : React, Recoil
 - 백엔드 : Spring Boot, Spring JPA, MySql, EC2, S3, RDS, CodeDeploy, Docker, Nginx
 - AI 모델 : Teachable Machine
 
