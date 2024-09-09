@@ -6,13 +6,15 @@ import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MeasurementResultEntity extends BaseTimeEntity {
+@MappedSuperclass
+public abstract class MeasurementResultEntity extends BaseTimeEntity {
 
 	@Column(unique = true)
 	@NotNull
