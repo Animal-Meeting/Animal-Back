@@ -8,6 +8,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
         show_sql: true
         format_sql: true
   datasource:
@@ -15,7 +17,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
-
 
 # 로깅 설정
 logging:
