@@ -40,6 +40,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	implementation 'org.springframework:spring-webflux:6.0.11'
 }
 
 tasks.named('test') {
