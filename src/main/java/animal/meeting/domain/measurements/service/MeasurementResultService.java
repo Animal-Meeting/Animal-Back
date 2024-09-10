@@ -1,5 +1,6 @@
 package animal.meeting.domain.measurements.service;
 
+import animal.meeting.domain.measurements.dto.request.CommonMeasurementRequest;
 import animal.meeting.domain.measurements.dto.request.FemaleMeasurementResultRequest;
 import animal.meeting.domain.measurements.dto.request.MaleMeasurementResultRequest;
 import animal.meeting.domain.measurements.dto.response.MeasurementResultResponse;
@@ -31,20 +32,19 @@ public class MeasurementResultService {
     private final S3Service s3Service;
     private final MeasurementResultMapper measurementResultMapper;
 
-    public void saveMaleMeasurementResult(MaleMeasurementResultRequest request) throws IOException {
-        validateMultipartFile(request.animalPhoto());
-        validateStudentId(request.studentId(), request.gender());
-        String photoUrl = s3Service.uploadMultipartFile(request.animalPhoto());
-        MaleMeasurementResult measurementResult = measurementResultMapper.toMaleEntity(request, photoUrl);
-        maleMeasurementResultRepository.save(measurementResult);
-    }
+    public void saveMeasurementResult(CommonMeasurementRequest request) throws IOException {
+        validateMultipartFile(request.getAnimalPhoto());
+        validateStudentId(request.getStudentId(), request.getGender());
 
-    public void saveFemaleMeasurementResult(FemaleMeasurementResultRequest request) throws IOException {
-        validateMultipartFile(request.animalPhoto());
-        validateStudentId(request.studentId(), request.gender());
-        String photoUrl = s3Service.uploadMultipartFile(request.animalPhoto());
-        FemaleMeasurementResult measurementResult = measurementResultMapper.toFemaleEntity(request, photoUrl);
-        femaleMeasurementResultRepository.save(measurementResult);
+        String photoUrl = s3Service.uploadMultipartFile(request.getAnimalPhoto());
+
+        if (request instanceof MaleMeasurementResultRequest maleRequest) {
+            MaleMeasurementResult maleResult = measurementResultMapper.toMaleEntity(maleRequest, photoUrl);
+            maleMeasurementResultRepository.save(maleResult);
+        } else if (request instanceof FemaleMeasurementResultRequest femaleRequest) {
+            FemaleMeasurementResult femaleResult = measurementResultMapper.toFemaleEntity(femaleRequest, photoUrl);
+            femaleMeasurementResultRepository.save(femaleResult);
+        }
     }
 
     private void validateStudentId(String studentId, Gender gender) {
