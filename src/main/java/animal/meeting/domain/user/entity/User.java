@@ -2,6 +2,7 @@ package animal.meeting.domain.user.entity;
 
 import animal.meeting.domain.BaseAuditEntity;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
+import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
@@ -27,9 +28,6 @@ public class User extends BaseAuditEntity {
 	private Long id;
 
 	@Column(columnDefinition = "varchar(30)", nullable = false)
-	private String name;
-
-	@Column(columnDefinition = "varchar(30)", nullable = false)
 	private String phoneNumber;
 
 	@Enumerated(EnumType.STRING)
@@ -50,14 +48,12 @@ public class User extends BaseAuditEntity {
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private User(
-		String name,
 		String phoneNumber,
 		Gender gender,
 		AnimalType firstAnimalType,
 		AnimalType secondAnimalType,
 		AnimalType selfAnimalType,
 		MeetingGroupType groupType) {
-		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
 		this.firstAnimalType = firstAnimalType;
@@ -67,11 +63,10 @@ public class User extends BaseAuditEntity {
 	}
 
 	public static User create(
-		UserRegisterRequest request,
+		NewUserRegisterRequest request,
 		MeetingGroupType groupType
 	) {
 		return User.builder()
-			.name(request.name())
 			.phoneNumber(request.phoneNumber())
 			.gender(request.gender())
 			.firstAnimalType(request.firstAnimalType())

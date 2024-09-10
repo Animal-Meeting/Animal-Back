@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 public class UnMatchedUser {
 
-	String name;
 	String phoneNumber;
 	Gender gender;
 	MeetingGroupType type;
@@ -17,7 +16,6 @@ public class UnMatchedUser {
 	public static UnMatchedUser create(User user) {
 
 		return UnMatchedUser.builder()
-			.name(user.getName())
 			.phoneNumber(user.getPhoneNumber())
 			.gender(user.getGender())
 			.type(user.getGroupType())
