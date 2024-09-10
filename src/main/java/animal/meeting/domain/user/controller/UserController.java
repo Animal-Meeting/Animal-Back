@@ -33,13 +33,6 @@ public class UserController {
 		userService.registerUserAndMeeting(request, groupType);
 	}
 
-	/**
-	@PostMapping("/login")
-	public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-		return userService.login(request);
-	}
-	 **/
-
 	@GetMapping("/participants/count")
 	public ParticipantResponse getParticipantCount() {
 		return userService.getParticipantCount();

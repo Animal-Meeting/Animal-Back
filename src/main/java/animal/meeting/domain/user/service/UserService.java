@@ -46,22 +46,6 @@ public class UserService {
 	}
 
 	/**
-
-	public LoginResponse login(LoginRequest request) {
-		User user =
-			userRepository
-				.findMostRecentUserByNameAndPhoneNumber(request.name(), request.phoneNumber())
-				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		if (!meetingService.hasUserMatchedGroup(user)) {
-			throw new CustomException(ErrorCode.MATCHING_GROUP_NOT_FOUND);
-		}
-
-		return LoginResponse.from(user);
-	}
-	 **/
-
-	/**
 	 * 회원가입 가능 여부 검사
 	 **/
 	private void validateRegistration(List<NewUserRegisterRequest> requests, MeetingGroupType groupType) {
