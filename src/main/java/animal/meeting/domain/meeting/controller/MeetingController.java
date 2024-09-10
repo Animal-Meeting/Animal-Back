@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import animal.meeting.domain.meeting.dto.request.ProgressingMeetingRequest;
 import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
 import animal.meeting.domain.meeting.service.MeetingService;
+import animal.meeting.domain.user.dto.response.UnMatchedUserResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +34,10 @@ public class MeetingController {
 		@Valid @RequestBody ProgressingMeetingRequest request) {
 		meetingService.progressAllMatching(request);
 	}
+
+	@GetMapping("/unmatched")
+	public UnMatchedUserResponse getUnmatchedUsers() {
+		return meetingService.getUnmatchedUsers();
+	}
+
 }

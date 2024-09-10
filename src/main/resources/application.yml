@@ -4,6 +4,8 @@ spring:
     group:
       dev: "dev"
       prod: "prod"
+    include:
+      - infra
 
 server:
   port: 8080

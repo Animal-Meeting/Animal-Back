@@ -1,78 +1,62 @@
 package animal.meeting.domain.user.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.meeting.service.MeetingService;
-import animal.meeting.domain.user.dto.request.LoginRequest;
+import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
-import animal.meeting.domain.user.dto.response.LoginResponse;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
-import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.SecretKey;
 import animal.meeting.domain.user.entity.User;
-import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final MeetingService meetingService;
 	private final SecretKey secretKey;
 
-	public UserService(UserRepository userRepository, MeetingService meetingService, SecretKey secretKey) {
-		this.userRepository = userRepository;
-		this.meetingService = meetingService;
-		this.secretKey = secretKey;
-	}
-
-	public void registerUserAndMeeting(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
-
+	/**
+	 * 유저 미팅 등록
+	 */
+	public void registerUserAndMeeting(List<NewUserRegisterRequest> requests, MeetingGroupType groupType) {
 		validateRegistration(requests, groupType);
-		List<User> userList = processRegistraion(requests, groupType);
+		List<User> userList = createUser(requests, groupType);
 		meetingService.joinMeeting(userList, groupType);
 	}
 
-	private List<User> processRegistraion(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
-		return requests.stream()
-			.map(request -> createUser(request, groupType))
+	private List<User> createUser(List<NewUserRegisterRequest> requests, MeetingGroupType groupType) {
+		List<User> userList =  requests.stream()
+			.map(request -> User.create(request, groupType))
 			.toList();
+		return userRepository.saveAll(userList);
 	}
 
-	private User createUser(UserRegisterRequest request, MeetingGroupType groupType) {
-		User newUser = User.create(request, groupType);
-		return userRepository.save(newUser);
-	}
-
-	public LoginResponse login(LoginRequest request) {
-		User user =
-			userRepository
-				.findMostRecentUserByNameAndPhoneNumber(request.name(), request.phoneNumber())
-				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		if (!meetingService.hasUserMatchedGroup(user)) {
-			throw new CustomException(ErrorCode.MATCHING_GROUP_NOT_FOUND);
-		}
-
-		return LoginResponse.from(user);
-	}
-
-	private void validateRegistration(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
+	/**
+	 * 회원가입 가능 여부 검사
+	 **/
+	private void validateRegistration(List<NewUserRegisterRequest> requests, MeetingGroupType groupType) {
 		validateUserCountAndGroupType(requests, groupType);
 		validateDupilicatedPhoneNumber(requests);
 	}
 
-	private void validateUserCountAndGroupType(List<UserRegisterRequest> requests, MeetingGroupType groupType) {
+	/**
+	 * 인원수 유효성 검사
+	 **/
+	private void validateUserCountAndGroupType(List<NewUserRegisterRequest> requests, MeetingGroupType groupType) {
 		int expectedUserCount = groupType.getUserCount();
 		int intputUserCount = requests.size();
 
@@ -81,20 +65,17 @@ public class UserService {
 		}
 	}
 
-	private void validateDupilicatedPhoneNumber(List<UserRegisterRequest> requests) {
-		Set<String> phoneNumbers = new HashSet<>();
+	/**
+	 * 그룹 내 휴대번호 중복 검사
+	 **/
+	private void validateDupilicatedPhoneNumber(List<NewUserRegisterRequest> requests) {
+		Set<String> phoneNumbers = requests.stream()
+			.map(NewUserRegisterRequest::phoneNumber)
+			.collect(Collectors.toSet());
 
-		for (UserRegisterRequest request : requests) {
-			String phoneNumber = request.phoneNumber();
-
-			if (!phoneNumbers.add(phoneNumber)) {
-				throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
-			}
+		if (phoneNumbers.size() != requests.size()) {
+			throw new CustomException(ErrorCode.DUPLICATED_PHONE_NUMBER);
 		}
-	}
-
-	public SecretKeyResponse checkValidUser(Long inputSecretKey) {
-		return SecretKeyResponse.from(secretKey.isValidSecretKey(inputSecretKey));
 	}
 
 	public ParticipantResponse getParticipantCount() {
@@ -103,6 +84,7 @@ public class UserService {
 
 		return ParticipantResponse.of(manCount, girlCount);
 	}
+
 	private User updateUser(User user, UserRegisterRequest request) {
 		UserInfo.SELF_ANIMAL_TYPE.executeUpdate(user, request.selfAnimalType());
 		UserInfo.FIRST_ANIMAL_TYPE.executeUpdate(user, request.firstAnimalType());
