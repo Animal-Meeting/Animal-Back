@@ -4,7 +4,7 @@ name: CI/CD - Phone Server
 on:
   push:
     # main branch에 push(merge)될 경우 실행됩니다.
-    branches: [ "cicd" ]
+#    branches: [ "cicd" ]
 
 permissions:
   contents: read

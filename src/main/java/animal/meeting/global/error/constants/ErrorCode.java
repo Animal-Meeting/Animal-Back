@@ -24,6 +24,7 @@ public enum ErrorCode implements ErrorCodeStatus {
 	GROUP_NOT_MATCHED(HttpStatus.BAD_REQUEST, "그룹 정보가 잘못되었습니다."),
 	MATCHING_PWD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "패스워드가 올바르지 않습니다."),
 	MATCHING_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND ,"매칭된 그룹의 정보가 없습니다."),
+	RESULT_NOT_FOUND(HttpStatus.NOT_FOUND ,"매칭 결과 정보가 없습니다."),
 
 	// AWS 오류
 	INVALID_MULTIPARTFILE(HttpStatus.BAD_REQUEST, "이미지 파일이 올바르지 않습니다."),
