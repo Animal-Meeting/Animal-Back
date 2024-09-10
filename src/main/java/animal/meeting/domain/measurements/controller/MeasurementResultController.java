@@ -33,6 +33,6 @@ public class MeasurementResultController {
         @RequestParam
         @NotNull
         String studentId)  {
-        return measurementResultService.getMaleMeasurementResult(studentId);
+        return measurementResultService.getMeasurementResult(studentId);
     }
 }
