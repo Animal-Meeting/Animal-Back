@@ -1,23 +1,9 @@
 package animal.meeting.domain.measurements.dto.request;
 
-import animal.meeting.domain.user.entity.type.AnimalType;
-import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 
-public record FemaleMeasurementResultRequest(
-        @NotNull String studentId,
-        @NotNull AnimalType animalType,
-        @NotNull Gender gender,
-        @NotNull Integer dogScore,
-        @NotNull Integer catScore,
-        @NotNull Integer rabbitScore,
-        @NotNull Integer desertFoxScore,
-        @NotNull Integer deerScore,
-        @NotNull Integer hamsterScore,
-        @NotNull MultipartFile animalPhoto) {
-    @Builder
-    public FemaleMeasurementResultRequest {
-    }
+public class FemaleMeasurementResultRequest extends CommonMeasurementRequest {
+	@NotNull(message = "여우 점수를 입력해주세요.") Integer desertFoxScore;
+	@NotNull(message = "사슴 점수를 입력해주세요.")  Integer deerScore;
+	@NotNull(message = "햄스터 점수를 입력해주세요.")  Integer hamsterScore;
 }

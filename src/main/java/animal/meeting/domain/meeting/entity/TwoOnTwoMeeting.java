@@ -1,5 +1,6 @@
 package animal.meeting.domain.meeting.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -38,6 +39,26 @@ public class TwoOnTwoMeeting extends MeetingDetails{
 	public void addUser(List<User> userList) {
 		this.user1 = userList.get(0);
 		this.user2 = userList.get(1);
+	}
+
+	@Override
+	public List<User> getUserList() {
+		return Arrays.asList(user1, user2);
+	}
+
+	@Override
+	public String getGroupId() {
+		return this.id;
+	}
+
+	@Override
+	public MeetingStatus getStatus() {
+		return this.status;
+	}
+
+	@Override
+	public void changeStatus(MeetingStatus status) {
+		this.status =  status;
 	}
 
 	@Builder(access = AccessLevel.PRIVATE)

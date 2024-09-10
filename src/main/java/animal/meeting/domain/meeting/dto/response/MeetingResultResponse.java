@@ -3,7 +3,7 @@ package animal.meeting.domain.meeting.dto.response;
 import java.util.List;
 
 import animal.meeting.domain.meeting.entity.MatchingResult;
-import animal.meeting.domain.meeting.entity.ResultUser;
+import animal.meeting.domain.user.entity.ResultUser;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 
 public record MeetingResultResponse(
@@ -13,7 +13,7 @@ public record MeetingResultResponse(
 	MeetingGroupType meetingGroupType
 
 ) {
-	public static MeetingResultResponse from(
+	public static MeetingResultResponse of(
 		List<ResultUser> femaleUsers,
 		List<ResultUser> maleUsers,
 		MatchingResult matchingResult) {

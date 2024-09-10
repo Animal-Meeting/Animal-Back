@@ -29,7 +29,7 @@ public class User extends BaseAuditEntity {
 	@Column(columnDefinition = "varchar(30)", nullable = false)
 	private String name;
 
-	@Column(columnDefinition = "varchar(30)", nullable = false, unique = true)
+	@Column(columnDefinition = "varchar(30)", nullable = false)
 	private String phoneNumber;
 
 	@Enumerated(EnumType.STRING)

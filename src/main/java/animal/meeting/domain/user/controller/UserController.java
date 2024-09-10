@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
+import animal.meeting.domain.meeting.service.MeetingService;
 import animal.meeting.domain.user.dto.request.LoginRequest;
 import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.dto.response.LoginResponse;
+import animal.meeting.domain.user.dto.response.ParticipantResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
+import animal.meeting.domain.user.dto.response.UnMatchedUserResponse;
 import animal.meeting.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+	private final MeetingService meetingService;
 
 	@PostMapping("/register")
 	public void registerUserAndMeeting(
@@ -44,4 +48,15 @@ public class UserController {
 	public LoginResponse login(@Valid @RequestBody LoginRequest request) {
 		return userService.login(request);
 	}
+
+	@GetMapping("/participant-count")
+	public ParticipantResponse getParticipantCount() {
+		return userService.getParticipantCount();
+	}
+
+	@GetMapping("/unmatched")
+	public UnMatchedUserResponse getUnmatchedUsers() {
+		return meetingService.getUnmatchedUsers();
+	}
+
 }

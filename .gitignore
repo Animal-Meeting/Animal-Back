@@ -1,6 +1,6 @@
 HELP.md
 .gradle
-build/
+#build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -167,9 +167,11 @@ out/
 *.env
 *.DS_Store
 /src/main/generated
+/src/main/resources/application-prod.yml
 
 #env
 *.env
 
 #node_modules
 ./node_modules
+
