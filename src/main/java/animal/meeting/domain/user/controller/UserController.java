@@ -24,13 +24,13 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
 	private final UserService userService;
 	private final MeetingService meetingService;
 
-	@PostMapping("/register")
+	@PostMapping("/")
 	public void registerUserAndMeeting(
 		@Valid @RequestBody List<UserRegisterRequest> request,
 		@RequestParam
