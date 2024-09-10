@@ -9,12 +9,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import animal.meeting.domain.meeting.dto.MatchingGroups;
 import animal.meeting.domain.meeting.dto.request.ProgressingMeetingRequest;
 import animal.meeting.domain.meeting.dto.response.MeetingResultResponse;
 import animal.meeting.domain.meeting.entity.MatchingResult;
 import animal.meeting.domain.meeting.entity.MeetingGroup;
 import animal.meeting.domain.meeting.entity.OneOnOneMeeting;
-import animal.meeting.domain.meeting.entity.ProgressingGroup;
+import animal.meeting.domain.meeting.dto.ProgressingGroup;
+import animal.meeting.domain.meeting.repository.MeetingGroupRepository;
 import animal.meeting.domain.user.dto.response.UnMatchedUserResponse;
 import animal.meeting.domain.user.entity.ResultUser;
 import animal.meeting.domain.meeting.entity.ThreeOnThreeMeeting;
@@ -91,30 +93,31 @@ public class MeetingService {
 		MatchingResult matchingResult = getMatchingResult(myMeetingGroupId);
 		String otherMeetingGroupId = getOtherMeetingGroupId(matchingResult, myMeetingGroupId);
 
-		List<ResultUser> femaleList = getMatchedParticipantsDetails(myMeetingGroupId, user.getGroupType());
-		List<ResultUser> maleList = getMatchedParticipantsDetails(otherMeetingGroupId, user.getGroupType());
+		List<ResultUser> myGroupDetails = getMatchedParticipantsDetails(myMeetingGroupId, user.getGroupType());
+		List<ResultUser> otherGroupDetails = getMatchedParticipantsDetails(otherMeetingGroupId, user.getGroupType());
 
-		if (user.getGender() == Gender.MALE) {
-			List<ResultUser> temp = femaleList;
-			femaleList = maleList;
-			maleList = temp;
-		}
+		MatchingGroups matchingGroups = adjustParticipantsByGender(user.getGender(), myGroupDetails, otherGroupDetails);
 
-		return MeetingResultResponse.of(femaleList, maleList, matchingResult);
+		return MeetingResultResponse.of(matchingGroups.getMyGroupDetails(), matchingGroups.getOtherGroupDetails(), matchingResult);
 	}
 
+	/**
+	 *
+	 * @param user
+	 * 유저의 그룹 ID 리턴
+	 */
 	private String getMeetingGroupIdByUser(User user) {
-		MeetingGroupType groupType = user.getGroupType();
-		switch (groupType) {
-			case ONE_ON_ONE:
-				return getOneOnOneGroupByUser(user).getId();
-			case TWO_ON_TWO:
-				return getTwoOnTwoGroupByUser(user).getId();
-			case THREE_ON_THREE:
-				return getThreeOnThreeGroupByUser(user).getId();
-			default:
-				throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
-		}
+		return switch (user.getGroupType()) {
+			case ONE_ON_ONE -> getGroupByUser(oneOnOneRepository, user).getId();
+			case TWO_ON_TWO -> getGroupByUser(twoOnTwoRepository, user).getId();
+			case THREE_ON_THREE -> getGroupByUser(threeOnThreeRepository, user).getId();
+			default -> throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
+		};
+	}
+
+	private <T> T getGroupByUser(MeetingGroupRepository<T> repository, User user) {
+		return repository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
+			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
 	private MatchingResult getMatchingResult(String groupId) {
@@ -122,47 +125,23 @@ public class MeetingService {
 			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
 	}
 
+	/**
+	 * 상대방들의 기본정보 리턴
+	 */
 	private List<ResultUser> getMatchedParticipantsDetails(String groupId, MeetingGroupType groupType) {
-		switch (groupType) {
-			case ONE_ON_ONE:
-				return getOneOnOneUserDetails(groupId);
-			case TWO_ON_TWO:
-				return getTwoOnTwoUserDetails(groupId);
-			case THREE_ON_THREE:
-				return getThreeOnThreeDetails(groupId);
-			default:
-				throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
-		}
+		return switch (groupType) {
+			case ONE_ON_ONE -> createResultUserList(oneOnOneRepository.findById(groupId));
+			case TWO_ON_TWO -> createResultUserList(twoOnTwoRepository.findById(groupId));
+			case THREE_ON_THREE -> createResultUserList(threeOnThreeRepository.findById(groupId));
+			default -> throw new CustomException(ErrorCode.GROUP_NOT_MATCHED);
+		};
 	}
 
-	private List<ResultUser> getOneOnOneUserDetails(String groupId) {
-		OneOnOneMeeting oneOnOneMeeting = oneOnOneRepository.findById(groupId)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-
-		ResultUser resultUser1 = ResultUser.create(oneOnOneMeeting.getUser1());
-
-		return List.of(resultUser1);
-	}
-
-	private List<ResultUser> getTwoOnTwoUserDetails(String groupId) {
-		TwoOnTwoMeeting twoOnTwoMeeting = twoOnTwoRepository.findById(groupId)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-
-		ResultUser resultUser1 = ResultUser.create(twoOnTwoMeeting.getUser1());
-		ResultUser resultUser2 = ResultUser.create(twoOnTwoMeeting.getUser2());
-
-		return List.of(resultUser1, resultUser2);
-	}
-
-	private List<ResultUser> getThreeOnThreeDetails(String groupId) {
-		ThreeOnThreeMeeting threeOnThreeMeeting = threeOnThreeRepository.findById(groupId)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-
-		ResultUser resultUser1 = ResultUser.create(threeOnThreeMeeting.getUser1());
-		ResultUser resultUser2 = ResultUser.create(threeOnThreeMeeting.getUser2());
-		ResultUser resultUser3 = ResultUser.create(threeOnThreeMeeting.getUser3());
-
-		return List.of(resultUser1, resultUser2, resultUser3);
+	private <T extends MeetingGroup> List<ResultUser> createResultUserList(Optional<T> meetingGroup) {
+		T group = meetingGroup.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
+		return group.getUserList().stream()
+			.map(ResultUser::create)
+			.toList();
 	}
 
 	private String getOtherMeetingGroupId(MatchingResult matchingResult, String myMeetingGroupId) {
@@ -172,22 +151,11 @@ public class MeetingService {
 		return matchingResult.getGirlGroupId();
 	}
 
-	private OneOnOneMeeting getOneOnOneGroupByUser(User user) {
-		return oneOnOneRepository
-			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private TwoOnTwoMeeting getTwoOnTwoGroupByUser(User user) {
-		return twoOnTwoRepository
-			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
-	}
-
-	private ThreeOnThreeMeeting getThreeOnThreeGroupByUser(User user) {
-		return threeOnThreeRepository
-			.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.GROUP_NOT_FOUND));
+	private MatchingGroups adjustParticipantsByGender(Gender gender, List<ResultUser> group1, List<ResultUser> group2) {
+		if (gender == Gender.MALE) {
+			return new MatchingGroups(group2, group1); // 남성일 때 그룹 순서를 변경
+		}
+		return new MatchingGroups(group1, group2); // 여성일 때 기본 순서 반환
 	}
 
 	public void progressAllMatching(ProgressingMeetingRequest request) {
@@ -308,13 +276,17 @@ public class MeetingService {
 		return sum;
 	}
 
+	/**
+	 *
+	 * @return
+	 * 매칭 안된 유저 리스트 리턴
+	 */
 	public UnMatchedUserResponse getUnmatchedUsers() {
 
 		List<UnMatchedUser> unMatchedResultList = new ArrayList<>();
 
 		for (MeetingGroupType groupType : MeetingGroupType.values()) {
 			List<? extends MeetingGroup> meetingGroups = getTodayMeetingGroupsByStatus(groupType, MeetingStatus.WAITING);
-
 
 			for (MeetingGroup group : meetingGroups) {
 				List<User> unMatchedUserList = group.getUserList();

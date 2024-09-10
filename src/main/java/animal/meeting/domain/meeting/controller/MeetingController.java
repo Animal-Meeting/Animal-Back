@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/meeting")
+@RequestMapping("/api/v1/meetings")
 public class MeetingController {
 
 	private final MeetingService meetingService;
