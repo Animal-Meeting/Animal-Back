@@ -1,5 +1,6 @@
 package animal.meeting.domain.measurements.service;
 
+import animal.meeting.domain.measurements.dto.request.CommonMeasurementRequest;
 import animal.meeting.domain.measurements.dto.request.FemaleMeasurementResultRequest;
 import animal.meeting.domain.measurements.dto.request.MaleMeasurementResultRequest;
 import animal.meeting.domain.measurements.dto.response.MeasurementResultResponse;
@@ -31,36 +32,29 @@ public class MeasurementResultService {
     private final S3Service s3Service;
     private final MeasurementResultMapper measurementResultMapper;
 
-    public void saveMaleMeasurementResult(MaleMeasurementResultRequest request) throws IOException {
-        validateMultipartFile(request.animalPhoto());
-        validateStudentId(request.studentId(), request.gender());
-        String photoUrl = s3Service.uploadMultipartFile(request.animalPhoto());
-        MaleMeasurementResult measurementResult = measurementResultMapper.toMaleEntity(request, photoUrl);
-        maleMeasurementResultRepository.save(measurementResult);
-    }
+    public void saveMeasurementResult(CommonMeasurementRequest request) throws IOException {
+        validateMultipartFile(request.getAnimalPhoto());
+        validateStudentId(request.getStudentId(), request.getGender());
 
-    public void saveFemaleMeasurementResult(FemaleMeasurementResultRequest request) throws IOException {
-        validateMultipartFile(request.animalPhoto());
-        validateStudentId(request.studentId(), request.gender());
-        String photoUrl = s3Service.uploadMultipartFile(request.animalPhoto());
-        FemaleMeasurementResult measurementResult = measurementResultMapper.toFemaleEntity(request, photoUrl);
-        femaleMeasurementResultRepository.save(measurementResult);
+        String photoUrl = s3Service.uploadMultipartFile(request.getAnimalPhoto());
+
+        if (request instanceof MaleMeasurementResultRequest maleRequest) {
+            MaleMeasurementResult maleResult = measurementResultMapper.toMaleEntity(maleRequest, photoUrl);
+            maleMeasurementResultRepository.save(maleResult);
+        } else if (request instanceof FemaleMeasurementResultRequest femaleRequest) {
+            FemaleMeasurementResult femaleResult = measurementResultMapper.toFemaleEntity(femaleRequest, photoUrl);
+            femaleMeasurementResultRepository.save(femaleResult);
+        }
     }
 
     private void validateStudentId(String studentId, Gender gender) {
-        Optional<?> measurementResultOptional;
+        Optional<?> measurementResultOptional = gender.equals(Gender.MALE)
+            ? maleMeasurementResultRepository.findMaleMeasurementResultByStudentId(studentId)
+            : femaleMeasurementResultRepository.findFemaleMeasurementResultByStudentId(studentId);
 
-        if (gender.equals(Gender.MALE)) {
-            measurementResultOptional = maleMeasurementResultRepository
-                .findMaleMeasurementResultByStudentId(studentId);
-        } else {
-            measurementResultOptional = femaleMeasurementResultRepository
-                .findFemaleMeasurementResultByStudentId(studentId);
-        }
-
-        if (measurementResultOptional.isPresent()) {
+        measurementResultOptional.ifPresent(result -> {
             throw new CustomException(ErrorCode.DUPLICATED_STUDENT_ID);
-        }
+        });
     }
 
     private void validateMultipartFile(MultipartFile multipartFile) {
@@ -69,51 +63,11 @@ public class MeasurementResultService {
         }
     }
 
-    public MeasurementResultResponse getMaleMeasurementResult(String studentId) {
-        Optional<FemaleMeasurementResult> femaleResultOptional = femaleMeasurementResultRepository
-            .findFemaleMeasurementResultByStudentId(studentId);
-
-        Optional<MaleMeasurementResult> maleResultOptional = maleMeasurementResultRepository
-            .findMaleMeasurementResultByStudentId(studentId);
-
-        if (femaleResultOptional.isPresent()) {
-            FemaleMeasurementResult femaleResult = femaleResultOptional.get();
-            return createMeasurementResultResponse(femaleResult);
-        } else if (maleResultOptional.isPresent()) {
-            MaleMeasurementResult maleResult = maleResultOptional.get();
-            return createMeasurementResultResponse(maleResult);
-        } else {
-            return null;
-        }
-    }
-
-    private MeasurementResultResponse createMeasurementResultResponse(FemaleMeasurementResult result) {
-        return new MeasurementResultResponse(
-            result.getPhotoUrl(),
-            result.getAnimalType(),
-            List.of(
-                new MeasurementResultResponse.AnimalScore("girl_dog", result.getDogScore()),
-                new MeasurementResultResponse.AnimalScore("girl_cat", result.getCatScore()),
-                new MeasurementResultResponse.AnimalScore("girl_rabbit", result.getRabbitScore()),
-                new MeasurementResultResponse.AnimalScore("girl_desertFox", result.getDesertFoxScore()),
-                new MeasurementResultResponse.AnimalScore("girl_deer", result.getDeerScore()),
-                new MeasurementResultResponse.AnimalScore("girl_hamster", result.getHamsterScore())
-            )
-        );
-    }
-
-    private MeasurementResultResponse createMeasurementResultResponse(MaleMeasurementResult result) {
-        return new MeasurementResultResponse(
-            result.getPhotoUrl(),
-            result.getAnimalType(),
-            List.of(
-                new MeasurementResultResponse.AnimalScore("man_dog", result.getDogScore()),
-                new MeasurementResultResponse.AnimalScore("man_cat", result.getCatScore()),
-                new MeasurementResultResponse.AnimalScore("man_rabbit", result.getRabbitScore()),
-                new MeasurementResultResponse.AnimalScore("man_dinosaur", result.getDinosaurScore()),
-                new MeasurementResultResponse.AnimalScore("man_bear", result.getBearScore()),
-                new MeasurementResultResponse.AnimalScore("man_wolf", result.getWolfScore())
-            )
-        );
+    public MeasurementResultResponse getMeasurementResult(String studentId) {
+        return femaleMeasurementResultRepository.findFemaleMeasurementResultByStudentId(studentId)
+            .map(MeasurementResultResponse::createMeasurementResultResponse)
+            .or(() -> maleMeasurementResultRepository.findMaleMeasurementResultByStudentId(studentId)
+                .map(MeasurementResultResponse::createMeasurementResultResponse))
+            .orElseThrow(() -> new CustomException(ErrorCode.RESULT_NOT_FOUND));
     }
 }

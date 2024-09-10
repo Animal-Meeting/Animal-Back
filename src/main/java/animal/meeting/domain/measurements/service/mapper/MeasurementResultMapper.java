@@ -11,31 +11,31 @@ public class MeasurementResultMapper {
 
     public MaleMeasurementResult toMaleEntity(MaleMeasurementResultRequest request, String photoUrl) {
         return MaleMeasurementResult.builder()
-                .studentId(request.studentId())
+                .studentId(request.getStudentId())
                 .photoUrl(photoUrl)
-                .animalType(request.animalType())
-                .gender(request.gender())
-                .dogScore(request.dogScore())
-                .catScore(request.catScore())
-                .rabbitScore(request.rabbitScore())
-                .dinosaurScore(request.dinosaurScore())
-                .bearScore(request.bearScore())
-                .wolfScore(request.wolfScore())
+                .animalType(request.getAnimalType())
+                .gender(request.getGender())
+                .dogScore(request.getDogScore())
+                .catScore(request.getCatScore())
+                .rabbitScore(request.getRabbitScore())
+                .dinosaurScore(request.getDinosaurScore())
+                .bearScore(request.getBearScore())
+                .wolfScore(request.getWolfScore())
                 .build();
     }
 
     public FemaleMeasurementResult toFemaleEntity(FemaleMeasurementResultRequest request, String photoUrl) {
         return FemaleMeasurementResult.builder()
-                .studentId(request.studentId())
+                .studentId(request.getStudentId())
                 .photoUrl(photoUrl)
-                .animalType(request.animalType())
-                .gender(request.gender())
-                .dogScore(request.dogScore())
-                .catScore(request.catScore())
-                .rabbitScore(request.rabbitScore())
-                .desertFoxScore(request.desertFoxScore())
-                .deerScore(request.deerScore())
-                .hamsterScore(request.hamsterScore())
+                .animalType(request.getAnimalType())
+                .gender(request.getGender())
+                .dogScore(request.getDogScore())
+                .catScore(request.getCatScore())
+                .rabbitScore(request.getRabbitScore())
+                .desertFoxScore(request.getCatScore())
+                .deerScore(request.getCatScore())
+                .hamsterScore(request.getCatScore())
                 .build();
     }
 }

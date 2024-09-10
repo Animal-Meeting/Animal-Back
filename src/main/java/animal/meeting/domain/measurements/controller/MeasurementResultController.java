@@ -18,14 +18,14 @@ public class MeasurementResultController {
 
     private final MeasurementResultService measurementResultService;
 
-    @PostMapping("/upload/male")
+    @PostMapping("/male")
     public void uploadMaleMeasurementResult(@Valid @ModelAttribute MaleMeasurementResultRequest request) throws IOException {
-        measurementResultService.saveMaleMeasurementResult(request);
+        measurementResultService.saveMeasurementResult(request);
     }
 
-    @PostMapping("/upload/female")
+    @PostMapping("/female")
     public void uploadFemaleMeasurementResult(@Valid @ModelAttribute FemaleMeasurementResultRequest request) throws IOException {
-        measurementResultService.saveFemaleMeasurementResult(request);
+        measurementResultService.saveMeasurementResult(request);
     }
 
     @GetMapping("/download")
@@ -33,6 +33,6 @@ public class MeasurementResultController {
         @RequestParam
         @NotNull
         String studentId)  {
-        return measurementResultService.getMaleMeasurementResult(studentId);
+        return measurementResultService.getMeasurementResult(studentId);
     }
 }
