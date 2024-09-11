@@ -15,5 +15,4 @@ public interface MeetingGroup {
 	MeetingStatus getStatus();
 
 	void changeStatus(MeetingStatus status);
-
 }

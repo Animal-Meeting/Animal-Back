@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
+import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ public class UserController {
 
 	private final UserService userService;
 
-	@PostMapping("/")
+	@PostMapping("")
 	public void registerUserAndMeeting(
 		@Valid @RequestBody List<NewUserRegisterRequest> request,
 		@RequestParam
@@ -36,6 +37,11 @@ public class UserController {
 	@GetMapping("/participants/count")
 	public ParticipantResponse getParticipantCount() {
 		return userService.getParticipantCount();
+	}
+
+	@GetMapping("/auth")
+	public SecretKeyResponse checkValidUser(@RequestParam @NotNull int secretKey) {
+		return userService.checkValidUser(secretKey);
 	}
 
 }

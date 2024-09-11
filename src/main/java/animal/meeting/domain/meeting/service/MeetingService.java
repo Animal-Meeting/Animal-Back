@@ -35,6 +35,7 @@ import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
+import animal.meeting.global.sms.SmsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +49,7 @@ public class MeetingService {
 	private final ThreeOnThreeRepository threeOnThreeRepository;
 	private final MatchingResultRepository matchingResultRepository;
 	private final UserRepository userRepository;
+	private final SmsService smsService;
 
 	@Value("${MATCHING_PASSWORD}")
 	private Long matchingPassword;
@@ -192,17 +194,17 @@ public class MeetingService {
 					continue;
 				}
 				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getGroupId());
+
 				for (ProgressingGroup elem : progressingGroups) {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
 						MeetingGroup maleGroup = getGroupById(maleGroups, elem.getGroupId());
-						if (maleGroup != null
-							&& maleGroup.getStatus() == MeetingStatus.WAITING
-							&& femaleGroup.getStatus() == MeetingStatus.WAITING) {
+						if (maleGroup != null && checkBothGroupStatus(maleGroup, femaleGroup, MeetingStatus.WAITING)) {
 							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
 							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
 							maleGroup.changeStatus(MeetingStatus.COMPLETED);
+							sendMatchingResultMessage(maleGroup, femaleGroup);
 							break;
 						}
 					}
@@ -210,6 +212,16 @@ public class MeetingService {
 			}
 		}
 		matchingResultRepository.saveAll(matchingResultsToSave);
+	}
+
+	private void sendMatchingResultMessage(MeetingGroup maleGroup, MeetingGroup femaleGroup) {
+		User male = maleGroup.getUserList().get(0);
+		User female = femaleGroup.getUserList().get(0);
+		smsService.sendMatchingResultSms(male.getPhoneNumber(), female);
+		smsService.sendMatchingResultSms(female.getPhoneNumber(), male);
+	}
+	private boolean checkBothGroupStatus(MeetingGroup maleGroup, MeetingGroup femaleGroup, MeetingStatus meetingStatus) {
+		return (maleGroup.getStatus().equals(meetingStatus)  && femaleGroup.getStatus().equals(meetingStatus));
 	}
 
 	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {
@@ -312,24 +324,6 @@ public class MeetingService {
 				return twoOnTwoRepository.findMeetingsByStatusAndCreatedAtToday(status);
 			case THREE_ON_THREE:
 				return threeOnThreeRepository.findMeetingsByStatusAndCreatedAtToday(status);
-			default:
-				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
-		}
-	}
-
-	public boolean hasUserMatchedGroup(User user) {
-		Optional<? extends MeetingGroup> matchedMeetingGroup = getMeetingGroupByUserAndStatus(user);
-		return matchedMeetingGroup.isPresent();
-	}
-
-	private Optional<? extends MeetingGroup> getMeetingGroupByUserAndStatus(User user) {
-		switch (user.getGroupType()) {
-			case ONE_ON_ONE:
-				return oneOnOneRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
-			case TWO_ON_TWO:
-				return twoOnTwoRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
-			case THREE_ON_THREE:
-				return threeOnThreeRepository.findMostRecentByUserIdAndStatus(user.getId(), MeetingStatus.COMPLETED);
 			default:
 				throw new CustomException(ErrorCode.INVALID_MEETING_PARAMETERS);
 		}

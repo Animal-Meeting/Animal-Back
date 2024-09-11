@@ -39,5 +39,4 @@ public class MeetingController {
 	public UnMatchedUserResponse getUnmatchedUsers() {
 		return meetingService.getUnmatchedUsers();
 	}
-
 }
