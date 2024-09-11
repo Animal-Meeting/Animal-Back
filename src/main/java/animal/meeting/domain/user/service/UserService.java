@@ -9,12 +9,11 @@ import org.springframework.stereotype.Service;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.meeting.service.MeetingService;
 import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
-import animal.meeting.domain.user.dto.request.UserRegisterRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
+import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.SecretKey;
 import animal.meeting.domain.user.entity.User;
 import animal.meeting.domain.user.entity.type.Gender;
-import animal.meeting.domain.user.entity.type.UserInfo;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
@@ -85,10 +84,8 @@ public class UserService {
 		return ParticipantResponse.of(manCount, girlCount);
 	}
 
-	private User updateUser(User user, UserRegisterRequest request) {
-		UserInfo.SELF_ANIMAL_TYPE.executeUpdate(user, request.selfAnimalType());
-		UserInfo.FIRST_ANIMAL_TYPE.executeUpdate(user, request.firstAnimalType());
-		UserInfo.SECOND_ANIMAL_TYPE.executeUpdate(user, request.secondAnimalType());
-		return userRepository.save(user);
+	public SecretKeyResponse checkValidUser(int inputSecretKey) {
+		return SecretKeyResponse.from(secretKey.isValidSecretKey(inputSecretKey));
 	}
+
 }
