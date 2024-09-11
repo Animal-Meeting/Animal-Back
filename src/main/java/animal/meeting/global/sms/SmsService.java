@@ -29,9 +29,9 @@ public class SmsService {
 	private String sender;
 
 	@Autowired
-	public SmsService(WebClient.Builder webClientBuilder, SecretKey secretKey, SecretKey secretKey1) {
+	public SmsService(WebClient.Builder webClientBuilder, SecretKey secretKey) {
 		this.webClient = webClientBuilder.baseUrl(ALIGO_BASE_URL).build();
-		this.secretKey = secretKey1;
+		this.secretKey = secretKey;
 	}
 
 	/**
