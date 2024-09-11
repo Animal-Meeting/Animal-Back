@@ -1,4 +1,4 @@
-package animal.meeting.domain.meeting.entity;
+package animal.meeting.domain.meeting.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
