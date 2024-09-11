@@ -67,6 +67,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+
           script: |
             REMOTE_DIR="/home/hong/app/animal-back"
             cd $REMOTE_DIR
