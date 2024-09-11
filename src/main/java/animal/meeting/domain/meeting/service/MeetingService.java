@@ -192,17 +192,17 @@ public class MeetingService {
 					continue;
 				}
 				List<ProgressingGroup> progressingGroups = map.get(femaleGroup.getGroupId());
+
 				for (ProgressingGroup elem : progressingGroups) {
 					if (standard == elem.getWeightValue()) {
 						// null일 때 막기
 						MeetingGroup maleGroup = getGroupById(maleGroups, elem.getGroupId());
-						if (maleGroup != null
-							&& maleGroup.getStatus() == MeetingStatus.WAITING
-							&& femaleGroup.getStatus() == MeetingStatus.WAITING) {
+						if (maleGroup != null && checkBothGroupStatus(maleGroup, femaleGroup, MeetingStatus.WAITING)) {
 							MatchingResult matchingResult = MatchingResult.create(maleGroup.getGroupId(), femaleGroup.getGroupId(), groupType);
 							matchingResultsToSave.add(matchingResult);
 							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
 							maleGroup.changeStatus(MeetingStatus.COMPLETED);
+
 							break;
 						}
 					}
@@ -210,6 +210,17 @@ public class MeetingService {
 			}
 		}
 		matchingResultRepository.saveAll(matchingResultsToSave);
+	}
+
+	private void sendMatchingResultMessage(MeetingGroup maleGroup, MeetingGroup femaleGroup) {
+		User male = maleGroup.getUserList().getFirst();
+		User female = femaleGroup.getUserList().getFirst();
+
+	}
+	private boolean checkBothGroupStatus(MeetingGroup maleGroup, MeetingGroup femaleGroup, MeetingStatus meetingStatus) {
+		if (maleGroup.getStatus() == meetingStatus && femaleGroup.getStatus() == meetingStatus)
+			return true;
+		return false;
 	}
 
 	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {

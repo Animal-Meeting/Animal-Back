@@ -35,26 +35,7 @@ public class SmsService {
 	 * @param msg 보낼 메시지 90byte 한글 최대 45자 가능
 	 * @return 전송결과 또는 오류
 	 */
-	public String sendSms(String receiver, SmsText msg) {
-
-		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		formData.add("key", apiKey);
-		formData.add("user_id", apiUserId);
-		formData.add("sender", sender);
-		formData.add("receiver", receiver);
-		formData.add("msg", msg.getValue());
-
-		return webClient
-			.post()
-			.uri("/send/")
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-			.body(BodyInserters.fromMultipartData(formData))
-			.retrieve()
-			.bodyToMono(String.class)
-			.block();
-	}
-
-	public String sendFormattedSms(String receiver, String msg) {
+	public String sendSms(String receiver, String msg) {
 
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("key", apiKey);
