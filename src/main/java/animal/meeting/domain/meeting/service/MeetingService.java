@@ -1,10 +1,11 @@
 package animal.meeting.domain.meeting.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -225,21 +226,25 @@ public class MeetingService {
 	}
 
 	private Map<String, List<ProgressingGroup>> createWeightedGroupMap(List<? extends MeetingGroup> femaleGroups, List<? extends MeetingGroup> maleGroups) {
-		Map<String, List<ProgressingGroup>> map = new HashMap<>();
+		return femaleGroups.stream()
+			.collect(Collectors.toMap(
+				MeetingGroup::getGroupId,
+				femaleGroup -> createProgressingGroupsForFemale(femaleGroup, maleGroups)
+			));
+	}
 
-		for (MeetingGroup femaleGroup : femaleGroups) {
-			List<User> femaleUsers = femaleGroup.getUserList();
-			List<ProgressingGroup> progressingGroupList = new ArrayList<>();
+	private List<ProgressingGroup> createProgressingGroupsForFemale(MeetingGroup femaleGroup, List<? extends MeetingGroup> maleGroups) {
+		List<User> femaleUsers = femaleGroup.getUserList();
 
-			for (MeetingGroup maleGroup : maleGroups) {
-				List<User> maleUsers = maleGroup.getUserList();
+		return maleGroups.stream()
+			.map(maleGroup -> createProgressingGroup(femaleUsers, maleGroup))
+			.toList();
+	}
 
-				double weightValue = calculateWeight(femaleUsers, maleUsers);
-				progressingGroupList.add(new ProgressingGroup(maleGroup.getGroupId(), weightValue));
-			}
-			map.put(femaleGroup.getGroupId(), progressingGroupList);
-		}
-		return map;
+	private ProgressingGroup createProgressingGroup(List<User> femaleUsers, MeetingGroup maleGroup) {
+		List<User> maleUsers = maleGroup.getUserList();
+		double weightValue = calculateWeight(femaleUsers, maleUsers);
+		return new ProgressingGroup(maleGroup.getGroupId(), weightValue);
 	}
 
 	private MeetingGroup getGroupById(List<? extends MeetingGroup> groupList, String groupId) {
@@ -263,17 +268,19 @@ public class MeetingService {
 			AnimalType firstAnimal = female.getFirstAnimalType();
 			AnimalType secondAnimal = female.getSecondAnimalType();
 			for (User male : maleUsers) {
-				if (firstAnimal == male.getSelfAnimalType()) {
-					sum += 1;
-					break;
-				}
-				else if (secondAnimal == male.getSecondAnimalType()) {
-					sum += 0.5;
-					break;
-				}
+				sum += matchAnimalType(firstAnimal, secondAnimal, male);
 			}
 		}
 		return sum;
+	}
+
+	private double matchAnimalType(AnimalType firstFemaleAnimal, AnimalType secondFemaleAnimal, User male) {
+		if (firstFemaleAnimal.equals(male.getSelfAnimalType())) {
+			return 1.0;
+		} else if (secondFemaleAnimal.equals(male.getSecondAnimalType())) {
+			return 0.5;
+		}
+		return 0;
 	}
 
 	/**
@@ -282,23 +289,21 @@ public class MeetingService {
 	 * 매칭 안된 유저 리스트 리턴
 	 */
 	public UnMatchedUserResponse getUnmatchedUsers() {
+		List<UnMatchedUser> unMatchedResultList =
+			Arrays.stream(MeetingGroupType.values())
+			.flatMap(groupType -> getUnmatchedUsersByGroupType(groupType).stream())
+			.toList();
 
-		List<UnMatchedUser> unMatchedResultList = new ArrayList<>();
-
-		for (MeetingGroupType groupType : MeetingGroupType.values()) {
-			List<? extends MeetingGroup> meetingGroups = getTodayMeetingGroupsByStatus(groupType, MeetingStatus.WAITING);
-
-			for (MeetingGroup group : meetingGroups) {
-				List<User> unMatchedUserList = group.getUserList();
-
-				for (User user : unMatchedUserList) {
-					UnMatchedUser unMatchedUser = UnMatchedUser.create(user);
-					unMatchedResultList.add(unMatchedUser);
-				}
-			}
-		}
 		return new UnMatchedUserResponse(unMatchedResultList);
 	}
+
+	private List<UnMatchedUser> getUnmatchedUsersByGroupType(MeetingGroupType groupType) {
+		return getTodayMeetingGroupsByStatus(groupType, MeetingStatus.WAITING).stream()
+			.flatMap(group -> group.getUserList().stream())
+			.map(UnMatchedUser::create)
+			.toList();
+	}
+
 	private List<? extends MeetingGroup> getTodayMeetingGroupsByStatus(MeetingGroupType groupType, MeetingStatus status) {
 		switch (groupType) {
 			case ONE_ON_ONE:
