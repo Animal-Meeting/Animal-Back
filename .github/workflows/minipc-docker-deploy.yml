@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir deploy
           cp ./docker/Dockerfile ./deploy/
-          cp ./scripts/*.sh ./deploy/
+          cp ./scripts/minipc-docker-deploy.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./deploy/minipc-docker-deploy.sh
           zip -r -qq -j ./animal-back-app.zip ./deploy

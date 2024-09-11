@@ -17,10 +17,14 @@ fi
 
 echo "### Docker 이미지 빌드 완료!" >> $DEPLOY_LOG
 
-# 기존에 실행 중인 컨테이너 중지 및 삭제
-echo "### 기존 컨테이너 종료 및 삭제 ..." >> $DEPLOY_LOG
-docker stop animal-meeting-container || true
-docker rm animal-meeting-container || true
+# 기존에 실행 중인 컨테이너 중지 및 삭제 (존재 여부 확인 후 중지/삭제)
+if [ "$(docker ps -a -q -f name=animal-meeting-container)" ]; then
+  echo "### 기존 컨테이너 종료 및 삭제 ..." >> $DEPLOY_LOG
+  docker stop animal-meeting-container >> $DEPLOY_LOG 2>&1
+  docker rm animal-meeting-container >> $DEPLOY_LOG 2>&1
+else
+  echo "### 삭제할 기존 컨테이너가 없습니다." >> $DEPLOY_LOG
+fi
 
 # 새로운 컨테이너 실행
 echo "### Docker 컨테이너 실행 시작 ..." >> $DEPLOY_LOG
@@ -32,5 +36,3 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "### Docker 컨테이너 실행 완료!" >> $DEPLOY_LOG
-
-#
