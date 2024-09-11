@@ -17,7 +17,6 @@ import java.io.IOException;
 public class MeasurementResultController {
 
     private final MeasurementResultService measurementResultService;
-
     @PostMapping("/male")
     public void uploadMaleMeasurementResult(@Valid @ModelAttribute MaleMeasurementResultRequest request) throws IOException {
         measurementResultService.saveMeasurementResult(request);
