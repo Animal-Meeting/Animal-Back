@@ -22,10 +22,14 @@ jobs:
       - name: Make application.yml
         run: |
           cd ./src/main/resources
+          touch ./application.yml
+          touch ./application-infra.yml
           touch ./application-prod.yml
           echo "$APPLICATION_PROD" > ./application-prod.yml
         env:
+          APPLICATION: ${{ secrets.APPLICATION }}
           APPLICATION_PROD: ${{ secrets.APPLICATION_PROD }}
+          APPLICATION_INFRA: ${{ secrets.APPLICATION_INFRA }}
         shell: bash
 
       - name: Gradle 권한 부여
@@ -67,4 +71,4 @@ jobs:
             REMOTE_DIR="/home/hong/app/animal-back"
             cd $REMOTE_DIR
             unzip -o animal-back-app.zip
-            ./minipc-deploy.sh
+            ./minipc-docker-deploy.sh
