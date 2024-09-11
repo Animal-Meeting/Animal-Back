@@ -22,4 +22,10 @@ public class SecretKey {
 	public boolean isValidSecretKey(int inputKey) {
 		return inputKey == secretKey1 || inputKey == secretKey2 || inputKey == secretKey3;
 	}
+
+	public int getRandomSecretKey() {
+		int[] secretKeys = { secretKey1, secretKey2, secretKey3 };
+		int randomIndex = (int) (Math.random() * secretKeys.length);  // 랜덤 인덱스 선택
+		return secretKeys[randomIndex];
+	}
 }

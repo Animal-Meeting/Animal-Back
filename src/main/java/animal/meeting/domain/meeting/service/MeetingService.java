@@ -35,6 +35,7 @@ import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
+import animal.meeting.global.sms.SmsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +49,7 @@ public class MeetingService {
 	private final ThreeOnThreeRepository threeOnThreeRepository;
 	private final MatchingResultRepository matchingResultRepository;
 	private final UserRepository userRepository;
+	private final SmsService smsService;
 
 	@Value("${MATCHING_PASSWORD}")
 	private Long matchingPassword;
@@ -202,7 +204,7 @@ public class MeetingService {
 							matchingResultsToSave.add(matchingResult);
 							femaleGroup.changeStatus(MeetingStatus.COMPLETED);
 							maleGroup.changeStatus(MeetingStatus.COMPLETED);
-
+							sendMatchingResultMessage(maleGroup, femaleGroup);
 							break;
 						}
 					}
@@ -213,14 +215,13 @@ public class MeetingService {
 	}
 
 	private void sendMatchingResultMessage(MeetingGroup maleGroup, MeetingGroup femaleGroup) {
-		User male = maleGroup.getUserList().getFirst();
-		User female = femaleGroup.getUserList().getFirst();
-
+		User male = maleGroup.getUserList().get(0);
+		User female = femaleGroup.getUserList().get(0);
+		smsService.sendMatchingResultSms(male.getPhoneNumber(), female);
+		smsService.sendMatchingResultSms(female.getPhoneNumber(), male);
 	}
 	private boolean checkBothGroupStatus(MeetingGroup maleGroup, MeetingGroup femaleGroup, MeetingStatus meetingStatus) {
-		if (maleGroup.getStatus() == meetingStatus && femaleGroup.getStatus() == meetingStatus)
-			return true;
-		return false;
+		return (maleGroup.getStatus().equals(meetingStatus)  && femaleGroup.getStatus().equals(meetingStatus))
 	}
 
 	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {
