@@ -61,5 +61,5 @@ checkstyle {
 	configProperties = ["suppressionFile": "config/checkstyle/naver-checkstyle-suppression.xml"]
 }
 bootJar {
-	archiveFileName = 'animal-meeting-blue-green-app.jar'
+	archiveFileName = 'animal-meeting-app.jar'
 }
