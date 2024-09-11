@@ -221,7 +221,7 @@ public class MeetingService {
 		smsService.sendMatchingResultSms(female.getPhoneNumber(), male);
 	}
 	private boolean checkBothGroupStatus(MeetingGroup maleGroup, MeetingGroup femaleGroup, MeetingStatus meetingStatus) {
-		return (maleGroup.getStatus().equals(meetingStatus)  && femaleGroup.getStatus().equals(meetingStatus))
+		return (maleGroup.getStatus().equals(meetingStatus)  && femaleGroup.getStatus().equals(meetingStatus));
 	}
 
 	private List<? extends MeetingGroup> getMeetingGroupsByType(MeetingGroupType groupType, Gender gender, MeetingStatus status) {
