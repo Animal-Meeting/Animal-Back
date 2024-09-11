@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/measurements")
+@RequestMapping("/api/v2/measurements")
 @RequiredArgsConstructor
 public class MeasurementResultController {
 
