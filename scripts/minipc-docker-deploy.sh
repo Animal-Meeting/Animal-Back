@@ -28,8 +28,7 @@ fi
 
 # 새로운 컨테이너 실행
 echo "### Docker 컨테이너 실행 시작 ..." >> $DEPLOY_LOG
-docker run -d --name animal-meeting-container -p 8000:8000 animal-meeting-app:latest >> $DEPLOY_LOG 2>&1
-
+docker run -d --name animal-meeting-container --network pricewagon-network -p 8000:8000 animal-meeting-app:latest >> $DEPLOY_LOG 2>&1
 if [ $? -ne 0 ]; then
   echo "Docker 컨테이너 실행 실패!" >> $DEPLOY_LOG
   exit 1
