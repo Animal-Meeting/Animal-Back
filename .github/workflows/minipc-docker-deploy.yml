@@ -43,6 +43,7 @@ jobs:
         run: |
           mkdir deploy
           cp ./docker/Dockerfile ./deploy/
+          cp ./docker/docker-compose.minipc.yml ./deploy/
           cp ./scripts/minipc-docker-deploy.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
           chmod +x ./deploy/minipc-docker-deploy.sh
