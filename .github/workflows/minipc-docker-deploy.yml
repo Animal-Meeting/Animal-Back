@@ -29,7 +29,7 @@ jobs:
           echo "$APPLICATION" > ./application.yml
           echo "$APPLICATION_INFRA" > ./application-infra.yml
           echo "$APPLICATION_PROD" > ./application-prod.yml
-          echo "$APPLICATION_PROD" > ./application-dev.yml
+          echo "$APPLICATION_DEV" > ./application-dev.yml
         env:
           APPLICATION: ${{ secrets.APPLICATION }}
           APPLICATION_PROD: ${{ secrets.APPLICATION_PROD }}
