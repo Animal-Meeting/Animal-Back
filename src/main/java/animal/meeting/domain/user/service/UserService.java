@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.meeting.service.MeetingService;
 import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
+import animal.meeting.domain.user.dto.request.PhoneAuthRequest;
+import animal.meeting.domain.user.dto.request.PhoneNumberRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.SecretKey;
@@ -17,6 +19,7 @@ import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.repository.UserRepository;
 import animal.meeting.global.error.CustomException;
 import animal.meeting.global.error.constants.ErrorCode;
+import animal.meeting.global.sms.SmsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +30,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final MeetingService meetingService;
 	private final SecretKey secretKey;
+	private final SmsService smsService;
 
 	/**
 	 * 유저 미팅 등록
@@ -84,8 +88,11 @@ public class UserService {
 		return ParticipantResponse.of(manCount, girlCount);
 	}
 
-	public SecretKeyResponse checkValidUser(int inputSecretKey) {
-		return SecretKeyResponse.from(secretKey.isValidSecretKey(inputSecretKey));
+	public SecretKeyResponse checkPhoneVerification(PhoneAuthRequest request) {
+		return SecretKeyResponse.from(secretKey.isValidSecretKey(request.authKey()));
+	}
+	public void requestVarificationCode(PhoneNumberRequest request) {
+		smsService.sendAuthCode(request.phoneNumber());
 	}
 
 }

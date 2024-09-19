@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
 import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
+import animal.meeting.domain.user.dto.request.PhoneAuthRequest;
+import animal.meeting.domain.user.dto.request.PhoneNumberRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.service.UserService;
@@ -39,9 +41,13 @@ public class UserController {
 		return userService.getParticipantCount();
 	}
 
-	@GetMapping("/auth")
-	public SecretKeyResponse checkValidUser(@RequestParam @NotNull int secretKey) {
-		return userService.checkValidUser(secretKey);
+	@PostMapping("/auth/phone/varification")
+	public SecretKeyResponse checkValidUser(@Valid @RequestBody PhoneAuthRequest request) {
+		return userService.checkPhoneVerification(request);
 	}
 
+	@PostMapping("/auth/phone/request-code")
+	public void requestVarificationCode(@Valid @RequestBody PhoneNumberRequest request) {
+		userService.requestVarificationCode(request);
+	}
 }

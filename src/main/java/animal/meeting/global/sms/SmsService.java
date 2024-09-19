@@ -37,7 +37,7 @@ public class SmsService {
 	/**
 	 * 휴대폰 인증용 SMS 전송
 	 */
-	public String sendCheckingSms(String receiver) {
+	public String sendAuthCode(String receiver) {
 		int randomSecretKey = secretKey.getRandomSecretKey();
 		String msg = SmsText.CHECKING_NUMBER.getValue() + randomSecretKey;
 		return sendSms(receiver, msg);
