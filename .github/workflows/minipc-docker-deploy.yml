@@ -25,13 +25,16 @@ jobs:
           touch ./application.yml
           touch ./application-infra.yml
           touch ./application-prod.yml
+          touch ./application-dev.yml
           echo "$APPLICATION" > ./application.yml
           echo "$APPLICATION_INFRA" > ./application-infra.yml
           echo "$APPLICATION_PROD" > ./application-prod.yml
+          echo "$APPLICATION_PROD" > ./application-dev.yml
         env:
           APPLICATION: ${{ secrets.APPLICATION }}
           APPLICATION_PROD: ${{ secrets.APPLICATION_PROD }}
           APPLICATION_INFRA: ${{ secrets.APPLICATION_INFRA }}
+          APPLICATION_DEV: ${{ secrets.APPLICATION_DEV }}
         shell: bash
 
       - name: Gradle 권한 부여
