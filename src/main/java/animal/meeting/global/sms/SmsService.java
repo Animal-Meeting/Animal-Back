@@ -51,7 +51,7 @@ public class SmsService {
 		return sendSms(receiver, msg);
 	}
 
-	private String sendSms(String receiver, String msg) {
+	public String sendSms(String receiver, String msg) {
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("key", apiKey);
 		formData.add("user_id", apiUserId);

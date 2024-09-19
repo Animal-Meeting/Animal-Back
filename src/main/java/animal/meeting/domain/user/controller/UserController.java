@@ -16,6 +16,7 @@ import animal.meeting.domain.user.dto.request.PhoneNumberRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
 import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.service.UserService;
+import animal.meeting.global.sms.SmsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+	private final SmsService smsService;
 
 	@PostMapping("")
 	public void registerUserAndMeeting(
@@ -49,5 +51,10 @@ public class UserController {
 	@PostMapping("/auth/phone/request-code")
 	public void requestVarificationCode(@Valid @RequestBody PhoneNumberRequest request) {
 		userService.requestVarificationCode(request);
+	}
+
+	@GetMapping("")
+	public void test() {
+		smsService.sendSms("01087914859", "반가워");
 	}
 }
