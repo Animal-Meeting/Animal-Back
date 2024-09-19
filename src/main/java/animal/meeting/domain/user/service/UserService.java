@@ -91,6 +91,7 @@ public class UserService {
 	public SecretKeyResponse checkPhoneVerification(PhoneAuthRequest request) {
 		return SecretKeyResponse.from(secretKey.isValidSecretKey(request.authKey()));
 	}
+
 	public void requestVarificationCode(PhoneNumberRequest request) {
 		smsService.sendAuthCode(request.phoneNumber());
 	}

@@ -25,6 +25,8 @@ jobs:
           touch ./application.yml
           touch ./application-infra.yml
           touch ./application-prod.yml
+          echo "$APPLICATION" > ./application.yml
+          echo "$APPLICATION_INFRA" > ./application-infra.yml
           echo "$APPLICATION_PROD" > ./application-prod.yml
         env:
           APPLICATION: ${{ secrets.APPLICATION }}
