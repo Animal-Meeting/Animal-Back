@@ -25,8 +25,8 @@ public class SmsService {
 	@Value("${aligo.api.user-id}")
 	private String apiUserId;
 
-	@Value("${aligo.api.sender}")
-	private String sender;
+	// @Value("${aligo.api.sender}")
+	private String sender = "01027354233";
 
 	@Autowired
 	public SmsService(WebClient.Builder webClientBuilder, SecretKey secretKey) {
