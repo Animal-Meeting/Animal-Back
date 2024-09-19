@@ -47,7 +47,7 @@ public class SmsService {
 	 * 매칭 결과 알림 SMS 전송
 	 */
 	public String sendMatchingResultSms(String receiver, User partner) {
-		String msg = SmsText.MATCHING_RESULT.getValue() + partner.getPhoneNumber();
+		String msg = SmsText.MATCHING_RESULT.getValue() + partner.getKakao();
 		return sendSms(receiver, msg);
 	}
 

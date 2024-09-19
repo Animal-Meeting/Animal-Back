@@ -34,6 +34,9 @@ public class User extends BaseAuditEntity {
 	@Column(columnDefinition = "enum('MALE', 'FEMALE')", nullable = false)
 	private Gender gender;
 
+	@Column(columnDefinition = "varchar(30)", nullable = false)
+	private String kakao;
+
 	@Enumerated(EnumType.STRING)
 	private AnimalType firstAnimalType;
 
@@ -50,12 +53,14 @@ public class User extends BaseAuditEntity {
 	private User(
 		String phoneNumber,
 		Gender gender,
+		String kakao,
 		AnimalType firstAnimalType,
 		AnimalType secondAnimalType,
 		AnimalType selfAnimalType,
 		MeetingGroupType groupType) {
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
+		this.kakao = kakao;
 		this.firstAnimalType = firstAnimalType;
 		this.secondAnimalType = secondAnimalType;
 		this.selfAnimalType = selfAnimalType;
@@ -69,6 +74,7 @@ public class User extends BaseAuditEntity {
 		return User.builder()
 			.phoneNumber(request.phoneNumber())
 			.gender(request.gender())
+			.kakao(request.kakao())
 			.firstAnimalType(request.firstAnimalType())
 			.secondAnimalType(request.secondAnimalType())
 			.selfAnimalType(request.selfAnimalType())

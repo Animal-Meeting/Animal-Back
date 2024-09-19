@@ -13,6 +13,9 @@ public record NewUserRegisterRequest(
 	@NotBlank(message = "전화번호는 비워둘 수 없습니다.")
 	@Pattern(regexp = "^010\\d{8}$", message = "휴대폰 번호를 정확히 입력해 주세요.")
 	String phoneNumber,
+
+	@NotNull(message = "카카오톡은 비워둘 수 없습니다.")
+	String kakao,
 	@NotNull(message = "성별을 선택해 주세요.")
 	Gender gender,
 	@NotNull(message = "선호하는 1순위 동물상을 선택해 주세요.")
