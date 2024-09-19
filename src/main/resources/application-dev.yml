@@ -47,3 +47,4 @@ cloud:
       static: ${AWS_S3_REGION}
     s3:
       bucket: ${AWS_S3_BUCKET}
+
