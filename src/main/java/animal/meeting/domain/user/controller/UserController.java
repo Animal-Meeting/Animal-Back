@@ -42,7 +42,7 @@ public class UserController {
 	}
 
 	@PostMapping("/auth/phone/varification")
-	public SecretKeyResponse checkValidUser(@Valid @RequestBody PhoneAuthRequest request) {
+	public SecretKeyResponse checkPhoneVerification(@Valid @RequestBody PhoneAuthRequest request) {
 		return userService.checkPhoneVerification(request);
 	}
 
