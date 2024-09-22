@@ -37,8 +37,8 @@ public class UserController {
 	}
 
 	@GetMapping("/participants/count")
-	public ParticipantResponse getParticipantCount() {
-		return userService.getParticipantCount();
+	public ParticipantResponse getParticipantCountForToday() {
+		return userService.getParticipantCountForToday();
 	}
 
 	@PostMapping("/auth/phone/varification")
