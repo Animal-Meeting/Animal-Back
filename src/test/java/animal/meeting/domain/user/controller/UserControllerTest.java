@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.NotWritablePropertyException;
@@ -29,6 +31,7 @@ import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.service.UserService;
+import animal.meeting.global.error.constants.ErrorCode;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureWebMvc
@@ -44,7 +47,8 @@ class UserControllerTest {
 	private ObjectMapper objectMapper;
 
 	@Test
-	@DisplayName("미팅 등록하기")
+	@Tag("v2")
+	@DisplayName("v2 미팅 등록하기")
 	void registerUserAndMeeting() throws Exception {
 
 		// given
@@ -70,6 +74,7 @@ class UserControllerTest {
 
 		MeetingGroupType groupType = MeetingGroupType.TWO_ON_TWO;
 
+		// 메소드 호출 여부 확인
 		Mockito.doNothing().when(userService).registerUserAndMeeting(userRegisterRequestList, groupType);
 
 		mockMvc.perform(post("/api/v2/users")
@@ -77,10 +82,40 @@ class UserControllerTest {
 			.param("groupType", groupType.name())
 			.content(objectMapper.writeValueAsString(userRegisterRequestList))) 	// 객체를 Json 문자열로 변환
 			.andExpect(status().isOk());
-			// .andDo(print());
 
-		// 호출검증
+		// 호출 검증 (1번 실행 되었는지 검증)
 		Mockito.verify(userService, Mockito.times(1)).registerUserAndMeeting(userRegisterRequestList, groupType);
+	}
+
+	@Test
+	@Tag("v1")
+	@DisplayName("v1 잘못된 그룹 타입으로 미팅 등록 실패")
+	void registerUserAndMeeting_InvalidGroupType() throws Exception {
+
+		// given
+		NewUserRegisterRequest user1 = NewUserRegisterRequest.builder()
+			.phoneNumber("01011111111")
+			.kakao("kakao1")
+			.gender(Gender.MALE)
+			.firstAnimalType(AnimalType.DOG)
+			.secondAnimalType(AnimalType.CAT)
+			.selfAnimalType(AnimalType.DINOSAUR)
+			.build();
+
+		List<NewUserRegisterRequest> userRegisterRequestList = List.of(user1);
+
+		// 올바르지 않은 그룹타입
+		MeetingGroupType groupType = MeetingGroupType.TWO_ON_TWO;
+
+		mockMvc.perform(post("/api/v2/users")
+			.contentType(MediaType.APPLICATION_JSON)
+			.param("groupType", groupType.name())
+			.content(objectMapper.writeValueAsString(userRegisterRequestList)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value(ErrorCode.INVALID_MEETING_PARAMETERS));
+
+		// register을 호출되면 안됨
+		Mockito.verify(userService, Mockito.times(0)).registerUserAndMeeting(userRegisterRequestList, groupType);
 	}
 
 	@Test
