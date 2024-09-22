@@ -163,4 +163,21 @@ class UserControllerTest {
 		Mockito.verify(userService, Mockito.times(1)).checkPhoneVerification(request);
 	}
 
+	@Test
+	@Tag("v2")
+	@DisplayName("휴대폰 인증코드 요청하기")
+	void requestVarificationCode() throws Exception {
+
+		String phone = "01012341234";
+		PhoneNumberRequest request = new PhoneNumberRequest(phone);
+
+		Mockito.doNothing().when(userService).requestVarificationCode(request);
+
+		mockMvc.perform(post("/api/v2/users/auth/phone/request-code")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isOk());
+
+		Mockito.verify(userService, Mockito.times(1)).requestVarificationCode(request);
+	}
 }
