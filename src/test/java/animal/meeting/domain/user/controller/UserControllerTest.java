@@ -32,6 +32,7 @@ import animal.meeting.domain.user.dto.request.NewUserRegisterRequest;
 import animal.meeting.domain.user.dto.request.PhoneAuthRequest;
 import animal.meeting.domain.user.dto.request.PhoneNumberRequest;
 import animal.meeting.domain.user.dto.response.ParticipantResponse;
+import animal.meeting.domain.user.dto.response.SecretKeyResponse;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import animal.meeting.domain.user.service.UserService;
@@ -122,7 +123,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@Tag("v2")
+	@Tag("v1")
 	@DisplayName("오늘 참가자 수 가져오기")
 	void getParticipantCountForToday() throws Exception {
 
@@ -143,29 +144,23 @@ class UserControllerTest {
 	}
 
 	@Test
-	@DisplayName("휴대폰 인증하기")
-	void checkValidUser() throws Exception {
-		// // 테스트용 데이터 및 모의 응답 설정
-		// Mockito.when(userService.checkPhoneVerification(Mockito.any())).thenReturn(null);  // 필요한 데이터로 수정 가능
-		//
-		// mockMvc.perform(post("/api/v2/users/auth/phone/varification")
-		// 		.contentType(MediaType.APPLICATION_JSON)
-		// 		.content(objectMapper.writeValueAsString(new PhoneAuthRequest("authKey"))))
-		// 	.andExpect(status().isOk());
-		//
-		// Mockito.verify(userService, Mockito.times(1)).checkPhoneVerification(Mockito.any());
+	@Tag("v2")
+	@DisplayName("휴대폰 인증번호 확인하기")
+	void checkPhoneVerification() throws Exception {
+
+		//given
+		int authKey = 3545;
+		PhoneAuthRequest request = new PhoneAuthRequest(authKey);
+
+		Mockito.when(userService.checkPhoneVerification(request)).thenReturn(SecretKeyResponse.from(true));
+
+		mockMvc.perform(post("/api/v2/users/auth/phone/varification")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.isPassed").value(true));
+
+		Mockito.verify(userService, Mockito.times(1)).checkPhoneVerification(request);
 	}
 
-	@Test
-	@DisplayName("휴대폰 인증코드 요청하기")
-	void requestVarificationCode() throws Exception {
-		// Mockito.doNothing().when(userService).requestVarificationCode(Mockito.any());
-		//
-		// mockMvc.perform(post("/api/v2/users/auth/phone/request-code")
-		// 		.contentType(MediaType.APPLICATION_JSON)
-		// 		.content(objectMapper.writeValueAsString(new PhoneNumberRequest("010-1234-5678"))))
-		// 	.andExpect(status().isOk());
-		//
-		// Mockito.verify(userService, Mockito.times(1)).requestVarificationCode(Mockito.any());
-	}
 }
