@@ -50,6 +50,7 @@ public class User extends BaseAuditEntity {
 
 	@Builder(access = AccessLevel.PUBLIC)
 	private User(
+		Long id,
 		String phoneNumber,
 		Gender gender,
 		String kakao,
@@ -57,6 +58,7 @@ public class User extends BaseAuditEntity {
 		AnimalType secondAnimalType,
 		AnimalType selfAnimalType,
 		MeetingGroupType groupType) {
+		this.id = id;
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
 		this.kakao = kakao;
