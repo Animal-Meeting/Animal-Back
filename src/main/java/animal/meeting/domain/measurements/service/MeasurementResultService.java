@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +33,7 @@ public class MeasurementResultService {
 
     public void saveMeasurementResult(CommonMeasurementRequest request) throws IOException {
         validateMultipartFile(request.getAnimalPhoto());
-        validateStudentId(request.getStudentId(), request.getGender());
+        validateDuplicateStudentId(request.getStudentId(), request.getGender());
 
         String photoUrl = s3Service.uploadMultipartFile(request.getAnimalPhoto());
 
@@ -47,7 +46,7 @@ public class MeasurementResultService {
         }
     }
 
-    private void validateStudentId(String studentId, Gender gender) {
+    private void validateDuplicateStudentId(String studentId, Gender gender) {
         Optional<?> measurementResultOptional = gender.equals(Gender.MALE)
             ? maleMeasurementResultRepository.findMaleMeasurementResultByStudentId(studentId)
             : femaleMeasurementResultRepository.findFemaleMeasurementResultByStudentId(studentId);
