@@ -64,6 +64,7 @@ public class MeetingControllerTest {
 		MeetingResultResponse mockResponse = new MeetingResultResponse(
 			List.of(), List.of(), "kakaoLink", MeetingGroupType.ONE_ON_ONE
 		);
+
 		Mockito.when(meetingService.getMeetingResultList(userId)).thenReturn(mockResponse);
 
 		mockMvc.perform(get("/api/v2/meetings/matching-result")
@@ -99,7 +100,18 @@ public class MeetingControllerTest {
 	}
 
 	@Test
+	@Tag("v2")
 	@DisplayName("매칭이 안된 유저들 가져오기")
-	void getUnmatchedUsers() {
+	void getUnmatchedUsers() throws Exception {
+
+		UnMatchedUserResponse mockResponse = UnMatchedUserResponse.from(List.of());
+
+		Mockito.when(meetingService.getUnmatchedUsers()).thenReturn(mockResponse);
+
+		mockMvc.perform(get("/api/v2/meetings/unmatched"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.list").isArray());
+
+		verify(meetingService, times(1)).getUnmatchedUsers();
 	}
 }
