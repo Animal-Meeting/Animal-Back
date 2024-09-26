@@ -145,7 +145,7 @@ class UserControllerTest {
 
 	@Test
 	@Tag("v2")
-	@DisplayName("휴대폰 인증번호 확인하기")
+	@DisplayName("휴대폰 인증번호 검증하기")
 	void checkPhoneVerification() throws Exception {
 
 		//given

@@ -2,7 +2,7 @@ package animal.meeting.domain.meeting.entity;
 
 import org.hibernate.annotations.Comment;
 
-import animal.meeting.domain.BaseAuditEntity;
+import animal.meeting.domain.commons.BaseAuditEntity;
 import animal.meeting.domain.meeting.entity.type.MeetingStatus;
 import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;

@@ -1,6 +1,6 @@
 package animal.meeting.domain.measurements.entity;
 
-import animal.meeting.domain.BaseTimeEntity;
+import animal.meeting.domain.commons.BaseTimeEntity;
 import animal.meeting.domain.user.entity.type.AnimalType;
 import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
