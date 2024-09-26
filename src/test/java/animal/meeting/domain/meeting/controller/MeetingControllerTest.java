@@ -56,9 +56,9 @@ public class MeetingControllerTest {
 	MeetingService meetingService;
 
 	@Test
-	@Tag("v2")
+	@Tag("v1")
 	@DisplayName("미팅결과 가져오기")
-	void getMeetingResultList() throws Exception{
+	void getMeetingResultList() throws Exception {
 
 		Long userId = 1L;
 		MeetingResultResponse mockResponse = new MeetingResultResponse(
@@ -77,10 +77,25 @@ public class MeetingControllerTest {
 
 	}
 
-
 	@Test
+	@Tag("v2")
 	@DisplayName("매칭로직 실행")
-	void progressAllMatching() {
+	void progressAllMatching() throws Exception {
+		ProgressingMeetingRequest mockRequest = new ProgressingMeetingRequest(1234L, MeetingGroupType.ONE_ON_ONE);
+
+		Mockito.doNothing().when(meetingService).progressAllMatching(mockRequest);
+
+		mockMvc.perform(post("/api/v2/meetings/matching-start")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content("""
+				{
+				"password":  1234,
+				"groupType":  "ONE_ON_ONE"
+				}
+				"""))
+			.andExpect(status().isOk());
+
+		Mockito.verify(meetingService, times(1)).progressAllMatching(mockRequest);
 	}
 
 	@Test
