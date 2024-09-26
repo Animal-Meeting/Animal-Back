@@ -81,7 +81,7 @@ public class UserService {
 		}
 	}
 
-	public ParticipantResponse getParticipantCount() {
+	public ParticipantResponse getParticipantCountForToday() {
 		Long manCount = userRepository.countByGenderAndCreatedAtToday(Gender.MALE);
 		Long girlCount =  userRepository.countByGenderAndCreatedAtToday(Gender.FEMALE);
 

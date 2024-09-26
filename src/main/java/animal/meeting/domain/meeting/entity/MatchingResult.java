@@ -2,12 +2,8 @@ package animal.meeting.domain.meeting.entity;
 
 import org.hibernate.annotations.Comment;
 
-import animal.meeting.domain.BaseTimeEntity;
+import animal.meeting.domain.commons.BaseTimeEntity;
 import animal.meeting.domain.meeting.entity.type.MeetingGroupType;
-import animal.meeting.domain.user.dto.request.UserRegisterRequest;
-import animal.meeting.domain.user.entity.User;
-import animal.meeting.domain.user.entity.type.AnimalType;
-import animal.meeting.domain.user.entity.type.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -37,12 +37,12 @@ public class UserController {
 	}
 
 	@GetMapping("/participants/count")
-	public ParticipantResponse getParticipantCount() {
-		return userService.getParticipantCount();
+	public ParticipantResponse getParticipantCountForToday() {
+		return userService.getParticipantCountForToday();
 	}
 
 	@PostMapping("/auth/phone/varification")
-	public SecretKeyResponse checkValidUser(@Valid @RequestBody PhoneAuthRequest request) {
+	public SecretKeyResponse checkPhoneVerification(@Valid @RequestBody PhoneAuthRequest request) {
 		return userService.checkPhoneVerification(request);
 	}
 
