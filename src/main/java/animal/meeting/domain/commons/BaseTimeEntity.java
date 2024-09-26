@@ -1,4 +1,4 @@
-package animal.meeting.domain;
+package animal.meeting.domain.commons;
 
 import java.time.LocalDateTime;
 
